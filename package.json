@@ -1,24 +1,24 @@
 {
   "name": "chat",
-  "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "dependencies": {
-    "better-sqlite3": "^8.0.1",
-    "concurrently": "^7.6.0",
-    "express": "^4.18.2",
-    "nodemon": "^2.0.20",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gustav-lundin/chat.git"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gustav-lundin/chat/issues"
+  },
+  "homepage": "https://github.com/gustav-lundin/chat#readme",
   "devDependencies": {
-    "@types/react": "^18.0.26",
-    "@types/react-dom": "^18.0.9",
-    "@vitejs/plugin-react": "^3.0.0",
-    "vite": "^4.0.0"
+    "concurrently": "^7.6.0"
   }
 }
