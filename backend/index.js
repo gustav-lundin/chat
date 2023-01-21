@@ -3,7 +3,7 @@ const db = require("better-sqlite3")("chat-app.db");
 const session = require("express-session");
 const store = require("better-express-store");
 const app = express();
-const setupRESTapi = require("./rest/rest-api.js");
+const router = require("./rest/rest-api");
 
 const port = process.env.port || 4000;
 
@@ -12,25 +12,11 @@ app.use(express.json({ limit: "100MB" }));
 app.listen(port, () => console.log("Listening on http://localhost:" + port));
 
 useSession(app);
-
-// example stub for rest api
-app.get("/api/fun", (req, res) => {
-  res.json({ fun: "So much fun" });
-});
-
-app.get("/api/test", (req, res) => {
-  run(res, `SELECT * FROM users`, {}, "all");
-});
-
-function run(res, query, params, type = "run") {
-  res.json(db.prepare(query)[type](params));
-}
+app.use("/api", router);
 
 // FIXME: solve unknown url on frontend?
 
-setupRESTapi(app, db);
-
-function useSession(app) {
+function useSession() {
   // salt for cookie hash generation
   let salt = "someUnusualStringThatIsUniqueForThisProject";
 
@@ -58,4 +44,13 @@ function useSession(app) {
       store: store({ dbPath: "./chat-app.db" }),
     })
   );
+}
+
+// DELETE ME
+app.get("/api/test", (req, res) => {
+  run(res, `SELECT * FROM users`, {}, "all");
+});
+
+function run(res, query, params, type = "run") {
+  res.json(db.prepare(query)[type](params));
 }
