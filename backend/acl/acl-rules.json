@@ -1,0 +1,37 @@
+{
+  "visitor": {
+    "login": {
+      "post": true,
+      "get": true
+    },
+    "users": {
+      "post": true
+    }
+  },
+  "user": {
+    "login": {
+      "get": true,
+      "delete": true
+    },
+    "edit-my-user-info": {
+      "put": true
+    },
+    "chats": { "post": true },
+    "users": { "get": true }
+  },
+  "admin": {
+    "login": {
+      "get": true,
+      "delete": true
+    },
+    "my-orders": {
+      "get": true
+    },
+    "edit-my-user-info": {
+      "put": true
+    },
+    "tablesAndViews": {
+      "get": true
+    }
+  }
+}
