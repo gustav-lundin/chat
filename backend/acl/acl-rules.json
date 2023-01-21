@@ -24,9 +24,6 @@
       "get": true,
       "delete": true
     },
-    "my-orders": {
-      "get": true
-    },
     "edit-my-user-info": {
       "put": true
     },

@@ -1,14 +1,14 @@
 const passwordEncryptor = require("../util/passwordEncryptor.js");
-const acl = require("../acl/acl.js");
-const login = require("./routes/login.js");
+const loginRouter = require("./routes/login.js");
 const express = require("express");
 const router = express.Router();
 const db = require("better-sqlite3")("chat-app.db");
+const authorizeRequest = require("../acl/acl.js");
 const userTable = "users";
 const passwordField = "password";
 const userRoleField = "userRole";
 
-router.use("/login", login);
+router.use("/login", loginRouter(db));
 
 let tablesAndViews = db
   .prepare(
@@ -23,9 +23,8 @@ let tablesAndViews = db
   .all();
 
 router.get("/tablesAndViews", (req, res) => {
-  if (!acl("tablesAndViews", req)) {
-    res.status(405);
-    res.json({ _error: "Not allowed!" });
+  authorizeRequest("tablesAndViews")(req, res);
+  if (res.headersSent) {
     return;
   }
   res.json(tablesAndViews);
@@ -143,9 +142,8 @@ function runQuery(
   sqlForPreparedStatement,
   onlyOne = false
 ) {
-  if (!acl(tableName, req)) {
-    res.status(405);
-    res.json({ _error: "Not allowed!" });
+  authorizeRequest(tableName)(req, res);
+  if (res.headersSent) {
     return;
   }
 
