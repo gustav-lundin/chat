@@ -4,8 +4,24 @@ const session = require("express-session");
 const store = require("better-express-store");
 const app = express();
 const router = require("./rest/rest-api");
+const { Sequelize } = require("sequelize");
 
 const port = process.env.port || 4000;
+
+const sequelize = new Sequelize({
+  dialect: "sqlite",
+  storage: "./chat-db.sqlite",
+});
+sequelize.sync().then(() => console.log("database created"));
+
+async function testSeq() {
+  try {
+    await sequelize.authenticate();
+    console.log("Connection has been established successfully.");
+  } catch (error) {
+    console.error("Unable to connect to the database:", error);
+  }
+}
 
 app.use(express.json({ limit: "100MB" }));
 
