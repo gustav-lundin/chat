@@ -1,12 +1,12 @@
 {
-  "chat-member": {
+  "chatMember": {
     "messages": { "post": true },
     "chats": { "get": true },
-    "chat-members": { "get": true }
+    "chatmembers": { "get": true }
   },
-  "chat-admin": {
+  "chatAdmin": {
     "messages": { "post": true },
     "chats": { "get": true },
-    "chatMembers": { "get": true, "post": true, "delete": true }
+    "chatmembers": { "get": true, "post": true, "delete": true }
   }
 }

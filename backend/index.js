@@ -3,25 +3,20 @@ const db = require("better-sqlite3")("chat-app.db");
 const session = require("express-session");
 const store = require("better-express-store");
 const app = express();
-const router = require("./rest/rest-api");
-const { Sequelize } = require("sequelize");
+const router = require("./rest/index");
+const sequelize = require("./sequelize");
 
 const port = process.env.port || 4000;
 
-const sequelize = new Sequelize({
-  dialect: "sqlite",
-  storage: "./chat-db.sqlite",
-});
-sequelize.sync().then(() => console.log("database created"));
+sequelize
+  .sync()
+  .then(() => console.log("database created"))
+  .catch(() => console.log("database creation failed"));
 
-async function testSeq() {
-  try {
-    await sequelize.authenticate();
-    console.log("Connection has been established successfully.");
-  } catch (error) {
-    console.error("Unable to connect to the database:", error);
-  }
-}
+// sequelize
+//   .sync({ force: true })
+//   .then(() => console.log("database created"))
+//   .catch(() => console.log("database creation failed"));
 
 app.use(express.json({ limit: "100MB" }));
 
@@ -57,7 +52,7 @@ function useSession() {
       resave: false,
       saveUninitialized: true,
       cookie: { secure: "auto" },
-      store: store({ dbPath: "./chat-app.db" }),
+      store: store({ dbPath: "./chat-db.sqlite" }),
     })
   );
 }

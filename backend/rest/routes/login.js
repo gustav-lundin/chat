@@ -1,36 +1,33 @@
 const authorizeRequest = require("../../acl/acl.js");
 const passwordEncryptor = require("../../util/passwordEncryptor.js");
 const express = require("express");
+const User = require("../../models/user");
 
-const loginRouter = (db) => {
-  const router = express.Router();
+const loginRouter = express.Router();
 
-  router.all("*", authorizeRequest("login"));
+// loginRouter.all("*", authorizeRequest("login"));
 
-  router.post("/", (req, res) => {
-    req.body.password = passwordEncryptor(req.body[passwordField]);
-    let stmt = db.prepare(`
-      SELECT * FROM customers
-      WHERE email = :email AND password = :password
-    `);
-    let result = stmt.all(req.body)[0] || { _error: "No such user." };
-    delete result.password;
-    if (!result._error) {
-      req.session.user = result;
-    }
-    res.json(result);
+loginRouter.post("/", async (req, res) => {
+  const encryptedPassword = passwordEncryptor(req.body.password);
+  const user = await User.findOne({
+    where: { password: encryptedPassword, email: req.body.email },
   });
+  if (user == null) {
+    res.status(404).json({ error: "No such user" });
+  } else {
+    delete user.password;
+    req.session.user = user;
+    res.json(user);
+  }
+});
 
-  router.get("/", (req, res) => {
-    res.json(req.session.user || { _error: "Not logged in" });
-  });
+loginRouter.get("/", (req, res) => {
+  res.json(req.session.user || { _error: "Not logged in" });
+});
 
-  router.delete("/", (req, res) => {
-    delete req.session.user;
-    res.json({ success: "logged out" });
-  });
-
-  return router;
-};
+loginRouter.delete("/", (req, res) => {
+  delete req.session.user;
+  res.json({ success: "logged out" });
+});
 
 module.exports = loginRouter;

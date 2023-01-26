@@ -13,9 +13,6 @@
       "get": true,
       "delete": true
     },
-    "edit-my-user-info": {
-      "put": true
-    },
     "chats": { "post": true },
     "users": { "get": true }
   },
@@ -23,12 +20,6 @@
     "login": {
       "get": true,
       "delete": true
-    },
-    "edit-my-user-info": {
-      "put": true
-    },
-    "tablesAndViews": {
-      "get": true
     }
   }
 }
