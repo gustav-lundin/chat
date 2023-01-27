@@ -4,6 +4,7 @@ const passwordEncryptor = require("../util/passwordEncryptor");
 class User extends Model {
   dto() {
     return {
+      id: this.id,
       firstName: this.firstName,
       lastName: this.lastName,
       email: this.email,

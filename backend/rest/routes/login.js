@@ -15,9 +15,9 @@ loginRouter.post("/", async (req, res) => {
   if (user == null) {
     res.status(404).json({ error: "No such user" });
   } else {
-    delete user.password;
-    req.session.user = user;
-    res.json(user);
+    const dto = user.dto();
+    req.session.user = dto;
+    res.json(dto);
   }
 });
 
