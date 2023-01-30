@@ -1,18 +1,42 @@
-const loginRouter = require("./routes/login.js");
 const express = require("express");
-const router = express.Router();
-const authorizeRequest = require("../acl/acl.js");
+const loginRouter = require("./routes/login.js");
 const userRouter = require("./routes/user");
 const chatRouter = require("./routes/chat");
 const messageRouter = require("./routes/message");
 const chatMemberRouter = require("./routes/chatmember");
+const authorizeRequest = require("../acl/acl.js");
 
-router.use("/login", authorizeRequest("login"), loginRouter);
-router.use("/users", authorizeRequest("users"), userRouter);
-router.use("/chats", authorizeRequest("chats"), chatRouter);
-router.use("/messages", authorizeRequest("messages"), messageRouter);
-router.use("/chatmembers", authorizeRequest("chatmembers"), chatMemberRouter);
+const router = express.Router();
 
+const routes = {
+  login: "/login",
+  users: "/users",
+  chats: "/chats",
+  messages: "/messages",
+  chatMembers: "/chatMembers",
+};
+
+const routeNames = {};
+Object.entries(routes).forEach(
+  ([key, value]) => (routeNames[key] = value.slice(1))
+);
+
+router.use(routes.login, authorizeRequest(routeNames.login), loginRouter);
+router.use(routes.users, authorizeRequest(routeNames.users), userRouter);
+router.use(routes.chats, authorizeRequest(routeNames.chats), chatRouter);
+router.use(
+  routes.messages,
+  authorizeRequest(routeNames.messages),
+  messageRouter
+);
+router.use(
+  routes.chatMembers,
+  authorizeRequest(routeNames.chatMembers),
+  chatMemberRouter
+);
+
+module.exports = routeNames;
+module.exports = routes;
 module.exports = router;
 
 // let tablesAndViews = db

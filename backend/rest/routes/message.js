@@ -1,13 +1,16 @@
 const messageRouter = require("express").Router();
 const Message = require("../../models/message");
+const { tryCatch } = require("../../util/trycatch");
 // const authorizeChatRequest = require("../../acl/chat-acl.js");
 
 // messageRouter.all("*", authorizeChatRequest("messages"));
 
-messageRouter.post("/", (req, res) => {
-  Message.create(req.body)
-    .then((message) => res.json(message.toJSON()))
-    .catch(() => res.send("message creation fail"));
-});
+messageRouter.post(
+  "/",
+  tryCatch(async (req, res) => {
+    const message = await Message.create(req.body);
+    res.json(message.toJSON());
+  })
+);
 
 module.exports = messageRouter;

@@ -35,7 +35,7 @@ User.init(
       type: DataTypes.TEXT,
       allowNull: false,
       // set(value) {
-      //   this.setDataValue("password"), passwordEncryptor(value); maybe not safe
+      //   this.setDataValue("password", passwordEncryptor(value)); maybe not safe
       // },
     },
     userRole: { type: DataTypes.TEXT, allowNull: false, field: "user_role" },

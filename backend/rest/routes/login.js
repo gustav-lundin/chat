@@ -1,28 +1,39 @@
-const authorizeRequest = require("../../acl/acl.js");
 const passwordEncryptor = require("../../util/passwordEncryptor.js");
 const express = require("express");
 const User = require("../../models/user");
+const { tryCatch } = require("../../util/trycatch.js");
+const AppError = require("../../apperror");
 
 const loginRouter = express.Router();
 
-// loginRouter.all("*", authorizeRequest("login"));
-
-loginRouter.post("/", async (req, res) => {
-  const encryptedPassword = passwordEncryptor(req.body.password);
-  const user = await User.findOne({
-    where: { password: encryptedPassword, email: req.body.email },
-  });
-  if (user == null) {
-    res.status(404).json({ error: "No such user" });
-  } else {
-    const dto = user.dto();
-    req.session.user = dto;
-    res.json(dto);
-  }
-});
+loginRouter.post(
+  "/",
+  tryCatch(async (req, res) => {
+    const encryptedPassword = passwordEncryptor(req.body.password);
+    const user = await User.findOne({
+      where: { password: encryptedPassword, email: req.body.email },
+    });
+    if (user == null) {
+      const userExists = await User.findOne({
+        where: { email: req.body.email },
+      });
+      if (!!userExists) {
+        throw new AppError("Incorrect password", 400);
+      }
+      throw new AppError("Incorrect email", 400);
+    } else {
+      const dto = user.dto();
+      req.session.user = dto;
+      res.json(dto);
+    }
+  })
+);
 
 loginRouter.get("/", (req, res) => {
-  res.json(req.session.user || { _error: "Not logged in" });
+  if (req.session.user) {
+    res.json(req.session.user);
+  }
+  throw new AppError("Not logged in", 400);
 });
 
 loginRouter.delete("/", (req, res) => {

@@ -1,4 +1,13 @@
 {
+  "userRoles": {
+    "visitor": "visitor",
+    "user": "user",
+    "admin": "admin"
+  },
+  "userChatRoles": {
+    "chatMember": "chatMember",
+    "chatAdmin": "chatAdmin"
+  },
   "visitor": {
     "login": {
       "post": true,
@@ -14,12 +23,27 @@
       "delete": true
     },
     "chats": { "post": true },
-    "users": { "get": true }
+    "users": { "get": true },
+    "userChatRoles": {
+      "chatMember": {
+        "messages": { "post": true },
+        "chats": { "get": true },
+        "chatmembers": { "get": true }
+      },
+      "chatAdmin": {
+        "messages": { "post": true },
+        "chats": { "get": true },
+        "chatmembers": { "get": true, "post": true, "delete": true }
+      }
+    }
   },
   "admin": {
     "login": {
       "get": true,
       "delete": true
-    }
+    },
+    "chats": { "get": true, "post": true },
+    "messages": { "get": true, "delete": true, "post": true },
+    "chatMembers": { "get": true, "post": true, "delete": true }
   }
 }
