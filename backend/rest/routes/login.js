@@ -1,4 +1,4 @@
-const passwordEncryptor = require("../../util/passwordEncryptor.js");
+const { encryptPassword } = require("../../util/password.js");
 const express = require("express");
 const User = require("../../models/user");
 const { tryCatch } = require("../../util/trycatch.js");
@@ -9,7 +9,7 @@ const loginRouter = express.Router();
 loginRouter.post(
   "/",
   tryCatch(async (req, res) => {
-    const encryptedPassword = passwordEncryptor(req.body.password);
+    const encryptedPassword = encryptPassword(req.body.password);
     const user = await User.findOne({
       where: { password: encryptedPassword, email: req.body.email },
     });

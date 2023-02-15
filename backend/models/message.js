@@ -7,8 +7,6 @@ class Message extends Model {}
 
 Message.init(
   {
-    // user_id: { type: DataTypes.INTEGER, references: { model: User, key: "id" } },
-    // chat,
     content: { type: DataTypes.TEXT, allowNull: false },
   },
   { sequelize, modelName: "User", tableName: "messages", updatedAt: false }

@@ -1,9 +1,6 @@
 const chatMemberRouter = require("express").Router();
 const ChatMember = require("../../models/chatmember");
-const authorizeRequest = require("../../acl/acl");
 const { tryCatch } = require("../../util/trycatch");
-
-chatMemberRouter.all("*", authorizeRequest("chatmembers"));
 
 chatMemberRouter.post(
   "/",
@@ -12,5 +9,7 @@ chatMemberRouter.post(
     res.json(chatMember.toJSON());
   })
 );
+
+chatMemberRouter.get("/:chatId", (req, res) => {});
 
 module.exports = chatMemberRouter;

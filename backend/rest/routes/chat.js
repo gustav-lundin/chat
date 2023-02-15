@@ -11,4 +11,6 @@ chatRouter.post(
   })
 );
 
+chatRouter.get("/:chatId", (req, res, next) => {});
+
 module.exports = chatRouter;

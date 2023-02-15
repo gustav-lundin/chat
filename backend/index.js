@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
-const router = require("./rest/index");
 const sequelize = require("./sequelize");
+const { router } = require("./rest/index");
 const errorHandler = require("./middleware/errorhandler");
 const AppError = require("./apperror");
 const useSession = require("./middleware/sessionhandler");
@@ -9,7 +9,7 @@ const useSession = require("./middleware/sessionhandler");
 const port = process.env.port || 4000;
 
 sequelize
-  .sync()
+  .sync({ force: true })
   .then(() => console.log("database created"))
   .catch(() => console.log("database creation failed"));
 
