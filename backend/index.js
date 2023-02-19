@@ -5,17 +5,30 @@ const { router } = require("./rest/index");
 const errorHandler = require("./middleware/errorhandler");
 const AppError = require("./apperror");
 const useSession = require("./middleware/sessionhandler");
+const seeder = require("./seeder/seeder.js");
 
 const port = process.env.port || 4000;
 
-sequelize
-  .sync({ force: true })
-  .then(() => console.log("database created"))
-  .catch(() => console.log("database creation failed"));
+// const syncDb =
+const syncDb = async () => {
+  await sequelize
+    .sync({ force: true })
+    .then(() => console.log("database created"))
+    .catch(() => console.log("database creation failed"));
+};
+
+const runSeeder = async () => {
+  await seeder();
+};
+
+(async () => {
+  await syncDb();
+  await seeder();
+})();
 
 app.use(express.json({ limit: "100MB" }));
 
-app.listen(port, () => console.log("Listening on http://localhost:" + port));
+app.listen(port, () => console.log(`Listening on http://localhost: ${port}`));
 
 useSession(app);
 app.use("/api", router);

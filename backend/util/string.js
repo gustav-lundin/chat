@@ -1,3 +1,3 @@
 exports.isLetter = (char) => {
-  return char.toLowerCase() != char.toUpperCase();
+  return char.toLowerCase() !== char.toUpperCase();
 };

@@ -1,6 +1,6 @@
 // using the built in crypto module of Node.js
 const crypto = require("crypto");
-const isLetter = require("./string");
+const { isLetter } = require("./string");
 
 // salt for encryption
 let salt = "shouldBeHardToGuessAndUniqueForEachProjectAHAHAAHaba@132";
@@ -32,7 +32,7 @@ exports.encryptPassword = (password) => {
 
 exports.passwordIsStrong = (password) => {
   let result = { isStrong: true, msg: "" };
-  if (password.length > 8) {
+  if (password.length < 8) {
     result.msg = "Password too short";
     result.isStrong = false;
     return result;

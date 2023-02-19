@@ -1,8 +1,8 @@
 const { DataTypes, Model } = require("sequelize");
 const AppError = require("../apperror");
 const sequelize = require("../sequelize");
-const passwordIsStrong = require("../util/password");
-const encryptPassword = require("../util/password");
+const { passwordIsStrong } = require("../util/password.js");
+const { encryptPassword } = require("../util/password.js");
 class User extends Model {
   dto() {
     return {
@@ -71,5 +71,7 @@ User.init(
   },
   { sequelize, modelName: "User", tableName: "users", timestamps: false }
 );
+
+User.sync({ force: true });
 
 module.exports = User;
