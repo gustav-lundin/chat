@@ -4,8 +4,11 @@ const { Message } = require("../../models/index.js");
 const { tryCatch } = require("../../util/trycatch");
 
 messageRouter.post(
-  "/",
+  "/:chatId",
   tryCatch(async (req, res) => {
+    if (req.body.userId !== req.session.user.id) {
+      throw new AppError("Not allowed", 405);
+    }
     const message = await Message.create(req.body);
     res.json(message.toJSON());
   })
