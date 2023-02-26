@@ -7,7 +7,8 @@ const errorHandler = (error, req, res, next) => {
 
   // catch validation errors
 
-  return res.status(500).json({ error: "Something went wrong" });
+  // return res.status(500).json({ error: "Something went wrong" });
+  throw error;
 };
 
 module.exports = errorHandler;

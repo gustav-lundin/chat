@@ -1,20 +1,19 @@
 const { DataTypes, Model } = require("sequelize");
 const sequelize = require("../sequelize");
-const Chat = require("./chat");
-const User = require("./user");
+// const Chat = require("./chat");
+// const User = require("./user");
 
 class Message extends Model {}
 
 Message.init(
   {
-    content: { type: DataTypes.TEXT, allowNull: false },
+    content: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+      validate: { notEmpty: true },
+    },
   },
-  { sequelize, modelName: "User", tableName: "messages", updatedAt: false }
+  { sequelize, modelName: "Message", tableName: "messages", updatedAt: false }
 );
-
-// Chat.hasMany(User, { foreignKey: "chat_id" });
-Message.belongsTo(Chat, { allowNull: false, foreignKey: "chatId" });
-// User.hasMany(Message, { foreignKey: "user_id" });
-Message.belongsTo(User, { allowNull: false, foreignKey: "userId" });
 
 module.exports = Message;

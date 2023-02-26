@@ -1,6 +1,6 @@
 const { encryptPassword } = require("../../util/password.js");
 const express = require("express");
-const User = require("../../models/user");
+const { User } = require("../../models/index.js");
 const { tryCatch } = require("../../util/trycatch.js");
 const AppError = require("../../apperror");
 
@@ -14,10 +14,10 @@ loginRouter.post(
       where: { password: encryptedPassword, email: req.body.email },
     });
     if (user == null) {
-      const userExists = await User.findOne({
+      const existingUser = await User.findOne({
         where: { email: req.body.email },
       });
-      if (!!userExists) {
+      if (existingUser) {
         throw new AppError("Incorrect password", 400);
       }
       throw new AppError("Incorrect email", 400);
@@ -37,7 +37,7 @@ loginRouter.get("/", (req, res) => {
 });
 
 loginRouter.delete("/", (req, res) => {
-  delete req.session.user;
+  req.session.user = undefined;
   res.json({ success: "logged out" });
 });
 

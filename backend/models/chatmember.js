@@ -1,7 +1,7 @@
 const { DataTypes, Model } = require("sequelize");
 const sequelize = require("../sequelize");
-const User = require("./user");
-const Chat = require("./chat");
+// const User = require("./user");
+// const Chat = require("./chat");
 const AppError = require("../apperror");
 
 class ChatMember extends Model {
@@ -36,14 +36,5 @@ ChatMember.init(
     timestamps: false,
   }
 );
-
-User.belongsToMany(Chat, {
-  through: ChatMember,
-  foreignKey: { name: "userId", allowNull: false },
-});
-Chat.belongsToMany(User, {
-  through: ChatMember,
-  foreignKey: { name: "chatId", allowNull: false },
-});
 
 module.exports = ChatMember;

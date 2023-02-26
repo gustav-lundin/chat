@@ -1,5 +1,5 @@
 const messageRouter = require("express").Router();
-const Message = require("../../models/message");
+const { Message } = require("../../models/index.js");
 const { tryCatch } = require("../../util/trycatch");
 // const authorizeChatRequest = require("../../acl/chat-acl.js");
 

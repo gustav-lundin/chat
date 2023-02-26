@@ -3,6 +3,7 @@ const AppError = require("../apperror");
 const sequelize = require("../sequelize");
 const { passwordIsStrong } = require("../util/password.js");
 const { encryptPassword } = require("../util/password.js");
+// const Chat = require("./chat.js");
 class User extends Model {
   dto() {
     return {
@@ -12,6 +13,9 @@ class User extends Model {
       email: this.email,
       userRole: this.userRole,
     };
+  }
+  static dtoKeys() {
+    return ["id", "firstName", "lastName", "email", "userRole"];
   }
 }
 
@@ -68,8 +72,23 @@ User.init(
         throw new Error("Do not try to set the `fullName` value!");
       },
     },
+    // dto: {
+    //   type: DataTypes.VIRTUAL,
+    //   get() {
+    //     return {
+    //       id: this.id,
+    //       firstName: this.firstName,
+    //       lastName: this.lastName,
+    //       email: this.email,
+    //       userRole: this.userRole,
+    //     };
+    //   },
+    //   set(value) {
+    //     throw new Error("Do not try to set the `fullName` value!");
+    //   },
+    // },
   },
-  { sequelize, modelName: "User", tableName: "users", timestamps: false }
+  { sequelize, modelName: "User", tableName: "chat_users", timestamps: false }
 );
 
 User.sync({ force: true });

@@ -7,7 +7,7 @@ const AppError = require("./apperror");
 const useSession = require("./middleware/sessionhandler");
 const seeder = require("./seeder/seeder.js");
 
-const port = process.env.port || 4000;
+const port = process.env.port || 3000;
 
 // const syncDb =
 const syncDb = async () => {
