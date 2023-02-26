@@ -28,6 +28,7 @@ ChatMember.init(
       defaultValue: false,
     },
     blocked: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
+    creator: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
   },
   {
     sequelize,

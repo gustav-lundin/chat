@@ -16,25 +16,12 @@ chatRouter.post(
 chatRouter.get(
   "/all",
   tryCatch(async (req, res, next) => {
-    const userId = 1;
-    const created = await Chat.findAll({
-      include: [
-        {
-          model: User,
-          as: "creator",
-          attributes: User.dtoKeys(),
-          where: { id: userId },
-        },
-        {
-          model: Message,
-          as: "chatMessages",
-          // include: { model: User, attributes: User.dtoKeys() },
-          // order: [["chatMessages", "createdAt", "DESC"]],
-        },
-      ],
-      order: [["chatMessages", "createdAt", "DESC"]],
-    });
-    // res.json(created);
+    const userId = 1; //req.session.user.id;
+    const orderBy = req.query?.orderby;
+    const order = [["chatMessages", "createdAt", "DESC"]];
+    if (orderBy === "name") {
+      order.unshift(["name"]);
+    }
     const memberChats = await Chat.findAll({
       include: [
         {
@@ -46,14 +33,49 @@ chatRouter.get(
         {
           model: Message,
           as: "chatMessages",
-          // include: { model: User, attributes: User.dtoKeys() },
         },
       ],
-      order: [["chatMessages", "createdAt", "DESC"]],
+      order,
     });
+    if (orderBy === "chatactivity") {
+      memberChats.sort((a, b) => {
+        if (a.chatMessages.length === 0 && b.chatMessages === 0) {
+          return 0;
+        } else if (a.chatMessages.length === 0) {
+          return 1;
+        } else if (b.chatMessages.length === 0) {
+          return -1;
+        } else {
+          const lastMessageDateA = new Date(a.chatMessages[0].createdAt);
+          const lastMessageDateB = new Date(b.chatMessages[0].createdAt);
+          return lastMessageDateB - lastMessageDateA;
+        }
+      });
+    } else if (orderBy === "useractivity") {
+      memberChats.sort((a, b) => {
+        const lastUserMessageA = a.chatMessages.find(
+          (message) => message.userId === userId
+        );
+        const lastUserMessageB = b.chatMessages.find(
+          (message) => message.userId === userId
+        );
+        if (lastUserMessageA === undefined && lastUserMessageB === undefined) {
+          return 0;
+        } else if (lastUserMessageA === undefined) {
+          return 1;
+        } else if (lastUserMessageB === undefined) {
+          return -1;
+        } else {
+          const lastUserMessageDateA = new Date(lastUserMessageA.createdAt);
+          const lastUserMessageDateB = new Date(lastUserMessageB.createdAt);
+          return lastUserMessageDateB - lastUserMessageDateA;
+        }
+      });
+    }
+
     const invited = [];
     const blocked = [];
-    const joined = [];
+    const active = [];
     for (const chat of memberChats) {
       const chatMember = chat.chatMembers[0].ChatMember;
       if (chatMember.blocked) {
@@ -61,19 +83,19 @@ chatRouter.get(
       } else if (!chatMember.inviteAccepted) {
         invited.push(chat);
       } else {
-        joined.push(chat);
+        active.push(chat);
       }
     }
-    res.json({ created, joined, invited, blocked });
+    res.json({ active, invited, blocked });
   })
 );
 
 chatRouter.get(
   "/:chatId",
   tryCatch(async (req, res, next) => {
+    const order = [["chatMessages", "createdAt", "DESC"]];
     const chat = await Chat.findByPk(req.params.chatId, {
       include: [
-        { model: User, as: "creator", attributes: User.dtoKeys() },
         { model: User, as: "chatMembers", attributes: User.dtoKeys() },
         {
           model: Message,
@@ -81,6 +103,7 @@ chatRouter.get(
           include: { model: User, attributes: User.dtoKeys() },
         },
       ],
+      order,
     });
     res.json({ chat });
   })

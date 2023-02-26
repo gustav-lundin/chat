@@ -1,14 +1,86 @@
 [
-  { "userId": 5, "chatId": 1, "inviteAccepted": true, "blocked": false },
-  { "userId": 5, "chatId": 2, "inviteAccepted": true, "blocked": false },
-  { "userId": 1, "chatId": 3, "inviteAccepted": true, "blocked": false },
-  { "userId": 1, "chatId": 4, "inviteAccepted": true, "blocked": false },
-  { "userId": 1, "chatId": 5, "inviteAccepted": true, "blocked": false },
-  { "userId": 2, "chatId": 1, "inviteAccepted": true, "blocked": false },
-  { "userId": 2, "chatId": 2, "inviteAccepted": true, "blocked": false },
-  { "userId": 2, "chatId": 3, "inviteAccepted": true, "blocked": false },
-  { "userId": 2, "chatId": 4, "inviteAccepted": true, "blocked": false },
-  { "userId": 2, "chatId": 5, "inviteAccepted": true, "blocked": false },
-  { "userId": 3, "chatId": 1, "inviteAccepted": true, "blocked": false },
-  { "userId": 3, "chatId": 2, "inviteAccepted": true, "blocked": false }
+  {
+    "userId": 5,
+    "chatId": 1,
+    "inviteAccepted": true,
+    "blocked": false,
+    "creator": false
+  },
+  {
+    "userId": 5,
+    "chatId": 2,
+    "inviteAccepted": true,
+    "blocked": false,
+    "creator": false
+  },
+  {
+    "userId": 1,
+    "chatId": 3,
+    "inviteAccepted": true,
+    "blocked": false,
+    "creator": false
+  },
+  {
+    "userId": 1,
+    "chatId": 4,
+    "inviteAccepted": true,
+    "blocked": false,
+    "creator": false
+  },
+  {
+    "userId": 1,
+    "chatId": 5,
+    "inviteAccepted": true,
+    "blocked": false,
+    "creator": false
+  },
+  {
+    "userId": 2,
+    "chatId": 1,
+    "inviteAccepted": true,
+    "blocked": false,
+    "creator": false
+  },
+  {
+    "userId": 2,
+    "chatId": 2,
+    "inviteAccepted": true,
+    "blocked": false,
+    "creator": false
+  },
+  {
+    "userId": 2,
+    "chatId": 3,
+    "inviteAccepted": true,
+    "blocked": false,
+    "creator": false
+  },
+  {
+    "userId": 2,
+    "chatId": 4,
+    "inviteAccepted": true,
+    "blocked": false,
+    "creator": false
+  },
+  {
+    "userId": 2,
+    "chatId": 5,
+    "inviteAccepted": true,
+    "blocked": false,
+    "creator": false
+  },
+  {
+    "userId": 3,
+    "chatId": 1,
+    "inviteAccepted": true,
+    "blocked": false,
+    "creator": false
+  },
+  {
+    "userId": 3,
+    "chatId": 2,
+    "inviteAccepted": true,
+    "blocked": false,
+    "creator": false
+  }
 ]

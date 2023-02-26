@@ -14,15 +14,6 @@ Chat.belongsToMany(User, {
   as: "chatMembers",
 });
 
-User.hasMany(Chat, {
-  foreignKey: { allowNull: false, name: "userId" },
-  as: "creator",
-});
-Chat.belongsTo(User, {
-  foreignKey: { allowNull: false, name: "userId" },
-  as: "creator",
-});
-
 Chat.hasMany(Message, {
   foreignKey: { allowNull: false, name: "chatId" },
   as: "chatMessages",
