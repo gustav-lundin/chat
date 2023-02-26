@@ -4,6 +4,7 @@ const { User } = require("../../models/index.js");
 const { tryCatch } = require("../../util/trycatch");
 const AppError = require("../../apperror");
 const { Chat } = require("../../models/index.js");
+const { Op } = require("sequelize");
 
 userRouter.post(
   "/",
@@ -23,10 +24,24 @@ userRouter.post(
 );
 
 userRouter.get(
-  "/test",
+  "/all",
   tryCatch(async (req, res) => {
-    const user = await User.findByPk(1, { include: Chat });
-    res.json(user);
+    const searchQuery = req.query?.search_query;
+    const whereOption =
+      searchQuery !== undefined
+        ? {
+            [Op.or]: [
+              { firstName: { [Op.like]: `%${searchQuery}%` } },
+              { lastName: { [Op.like]: `%${searchQuery}%` } },
+              { email: { [Op.like]: `%${searchQuery}%` } },
+            ],
+          }
+        : {};
+    const users = await User.findAll({
+      where: whereOption,
+      attributes: User.dtoKeys(),
+    });
+    res.json(users);
   })
 );
 
