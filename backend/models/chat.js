@@ -1,29 +1,7 @@
 const { DataTypes, Model } = require("sequelize");
-// const { authorizeChatRequest } = require("../acl/acl");
 const sequelize = require("../sequelize");
-// const User = require("./user.js");
-// const ChatMember = require("./chatmember");
 
-class Chat extends Model {
-  // async getChatMembers(req) {
-  // await this.authorizeChatRequest(req, routeNames.chatMembers);
-  // SELECT * FROM users
-  // WHERE users.id = chatmembers.id
-  // AND chatmembers.chatId = params.chatId
-  // AND chatmembers.inviteAccepted != false
-  //   Chat.findByPk(chatId, {
-  //     include: {
-  //       model: User,
-  //       where: { inviteAccepted: { [Op.ne]: false } },
-  //       through: {
-  //         attributes: ["id", "firstName", "lastName", "email", "userRole"],
-  //         where: { inviteAccepted: true },
-  //       },
-  //     },
-  //   });
-  // }
-  // static async getMessages() {}
-}
+class Chat extends Model {}
 
 Chat.init(
   {
