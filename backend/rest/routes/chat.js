@@ -1,15 +1,21 @@
 const express = require("express");
 const chatRouter = express.Router();
-const { Chat } = require("../../models/index.js");
+const { Chat, ChatMember, Message, User } = require("../../models/index.js");
 const { tryCatch } = require("../../util/trycatch");
-const { User } = require("../../models/index.js");
-const { Message } = require("../../models/index.js");
 
 chatRouter.post(
   "/",
   tryCatch(async (req, res) => {
+    const userId = 1; //req.session.user.id
     const chat = await Chat.create(req.body);
-    res.json(chat);
+    const creator = await ChatMember.create({
+      userId: userId,
+      chatId: chat.id,
+      inviteAccepted: true,
+      blocked: false,
+      creator: true,
+    });
+    res.json({ chat, creator });
   })
 );
 
