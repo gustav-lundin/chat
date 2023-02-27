@@ -7,7 +7,7 @@ chatRouter.post(
   "/",
   tryCatch(async (req, res) => {
     const userId = 1; //req.session.user.id
-    const chat = await Chat.create(req.body);
+    const chat = await Chat.create({ name: req.body.name });
     const creator = await ChatMember.create({
       userId: userId,
       chatId: chat.id,

@@ -31,7 +31,6 @@ chatMemberRouter.put(
     const chatId = req.params.chatId;
     const userId = req.params.userId;
     if (!(chatId && userId)) {
-      console.log("no");
       throw new AppError("No id provided", 404);
     }
     const chatMember = await ChatMember.findOne({ where: { chatId, userId } });
