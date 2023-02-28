@@ -2,65 +2,90 @@ const aclRules = require("./acl-rules.json");
 const { Chat } = require("../models/index.js");
 const { ChatMember } = require("../models/index.js");
 const AppError = require("../apperror");
+const { tryCatch } = require("../util/trycatch");
 
-const getAuthMiddleware = (route) => {
-  return async (req, _res, next) => {
-    console.log("authentication turned off");
-    next();
-    return;
+// const getAuthMiddleware = (route) => {
+//   return async (req, _res, next) => {
+//     // console.log("authentication turned off");
+//     // next();
+//     // return;
+//     try {
+//       let method = req.method.toLowerCase();
+//       method = method === "patch" ? "put" : method;
+//       console.log(req.params.chatId);
+//       if (req.params.chatId) {
+//         await authorizeChatRequest(route, req, method);
+//       } else {
+//         authorizeRequest(route, req, method);
+//       }
+//       next();
+//     } catch (e) {
+//       next(e);
+//     }
+//   };
+// };
+
+const authorizeRequest = (route, chatId) => {
+  return async (req, res, next) => {
     try {
-      let method = req.method.toLowerCase();
-      method = method === "patch" ? "put" : method;
-      if (req.params.chatId && req.session.user.userRole !== "admin") {
-        await authorizeChatRequest(route, req, method);
+      if (chatId) {
+        await authorizeChatRequest(req, res, next, route, chatId);
       } else {
-        authorizeRequest(route, req, method);
+        let method = req.method.toLowerCase();
+        method = method === "patch" ? "put" : method;
+        let userRole = req.session?.user
+          ? req.session.user.userRole
+          : "visitor";
+        let allowed = !!aclRules?.[userRole]?.[route]?.[method];
+        if (!allowed) {
+          throw new AppError("Access denied", 403);
+        }
+        console.log("req authorized");
+        next();
       }
-      next();
     } catch (e) {
       next(e);
     }
   };
 };
 
-function authorizeRequest(route, req, method) {
-  let userRole = req.session?.user ? req.session.user.userRole : "visitor";
-  let allowed = !!aclRules?.[userRole]?.[route]?.[method];
+async function authorizeChatRequest(req, _res, next, route, chatId) {
+  let method = req.method.toLowerCase();
+  method = method === "patch" ? "put" : method;
+  if (!req.session?.user) {
+    throw new AppError("Login required", 403);
+  }
+  const chat = await Chat.findByPk(chatId);
+  if (chat === null) {
+    throw new AppError("Chat not found", 404);
+  }
+  let chatUserRole;
+  if (req.session.user.userRole === aclRules.userRoles.admin) {
+    chatUserRole = aclRules.userChatRoles.chatAdmin;
+  } else {
+    const chatMember = await ChatMember.findOne({
+      where: { chatId: chat.id, userId: req.session.user.id },
+    });
+    if (chatMember == null) {
+      throw new AppError("Only accessible for chat members", 403);
+    }
+    if (
+      !chatMember.inviteAccepted &&
+      route !== "chatmembers" &&
+      method !== "put"
+    ) {
+      throw new AppError("Invite not accepted", 405);
+    }
+    chatUserRole = chatMember.creator
+      ? aclRules.userChatRoles.chatAdmin
+      : aclRules.userChatRoles.chatMember;
+  }
+  let allowed = aclRules.userChatRoles?.[chatUserRole]?.[route]?.[method];
   if (!allowed) {
     throw new AppError("Access denied", 403);
   }
+  console.log("chat req authorized");
+  next();
 }
 
-async function authorizeChatRequest(route, req, method) {
-  try {
-    if (!req.session.user) {
-      throw new AppError("Access denied", 403);
-    } else if (req.session.userRole === aclRules.userRoles.admin) {
-      return;
-    }
-    const chat = await Chat.findByPk(req.params.chatId);
-    if (chat === null) {
-      throw new AppError("Chat not found", 404);
-    }
-    let chatUserRole;
-    if (chat.userId === req.session.user.id) {
-      chatUserRole = aclRules.userChatRoles.chatAdmin;
-    } else {
-      const chatMember = await ChatMember.findOne({
-        where: { chatId: chat.id, userId: req.session.user.id },
-      });
-      if (chatMember == null || !chatMember.inviteAccepted) {
-        throw new AppError("Access denied", 403);
-      }
-      chatUserRole = aclRules.userChatRoles.chatMember;
-    }
-    let allowed = user.userChatRoles?.[chatUserRole]?.[route]?.[method];
-    if (!allowed) {
-      throw new AppError("Access denied", 403);
-    }
-  } catch (e) {
-    throw e;
-  }
-}
-
-exports.getAuthMiddleware = getAuthMiddleware;
+exports.authorizeRequest = authorizeRequest;

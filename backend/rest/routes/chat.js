@@ -2,11 +2,15 @@ const express = require("express");
 const chatRouter = express.Router();
 const { Chat, ChatMember, Message, User } = require("../../models/index.js");
 const { tryCatch } = require("../../util/trycatch");
+const { authorizeRequest } = require("../../acl/acl.js");
+
+const routeName = "chats";
 
 chatRouter.post(
   "/",
+  authorizeRequest(routeName, null),
   tryCatch(async (req, res) => {
-    const userId = 1; //req.session.user.id
+    const userId = req.session.user.id;
     const chat = await Chat.create({ name: req.body.name });
     const creator = await ChatMember.create({
       userId: userId,

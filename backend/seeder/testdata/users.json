@@ -1,5 +1,42 @@
-[{"id":1,"firstName":"Maegan","lastName":"Temby","email":"mtemby0@spotify.com","password":"wQQOhg123","userRole":"user"},
-{"id":2,"firstName":"Hildegarde","lastName":"Bendik","email":"hbendik1@myspace.com","password":"NMoiHC18w123","userRole":"user"},
-{"id":3,"firstName":"Mitzi","lastName":"Carayol","email":"mcarayol2@google.cn","password":"bFqnJaJDA123","userRole":"user"},
-{"id":4,"firstName":"Lydon","lastName":"Mummery","email":"lmummery3@scientificamerican.com","password":"myKnudCpLi123","userRole":"user"},
-{"id":5,"firstName":"Skelly","lastName":"Bailles","email":"sbailles4@163.com","password":"K2S3HeIvxClI123","userRole":"user"}]
+[
+  {
+    "id": 1,
+    "firstName": "Maegan",
+    "lastName": "Temby",
+    "email": "test@test.com",
+    "password": "test1234",
+    "userRole": "user"
+  },
+  {
+    "id": 2,
+    "firstName": "Hildegarde",
+    "lastName": "Bendik",
+    "email": "hbendik1@myspace.com",
+    "password": "NMoiHC18w123",
+    "userRole": "user"
+  },
+  {
+    "id": 3,
+    "firstName": "Mitzi",
+    "lastName": "Carayol",
+    "email": "mcarayol2@google.cn",
+    "password": "bFqnJaJDA123",
+    "userRole": "user"
+  },
+  {
+    "id": 4,
+    "firstName": "Lydon",
+    "lastName": "Mummery",
+    "email": "lmummery3@scientificamerican.com",
+    "password": "myKnudCpLi123",
+    "userRole": "user"
+  },
+  {
+    "id": 5,
+    "firstName": "Skelly",
+    "lastName": "Bailles",
+    "email": "sbailles4@163.com",
+    "password": "K2S3HeIvxClI123",
+    "userRole": "user"
+  }
+]

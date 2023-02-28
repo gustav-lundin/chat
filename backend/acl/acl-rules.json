@@ -22,18 +22,23 @@
       "get": true,
       "delete": true
     },
-    "chats": { "post": true },
+    "chats": { "post": true, "get": true },
     "users": { "get": true },
     "userChatRoles": {
       "chatMember": {
         "messages": { "post": true },
         "chats": { "get": true },
-        "chatmembers": { "get": true }
+        "chatmembers": { "get": true, "put": true }
       },
       "chatAdmin": {
         "messages": { "post": true },
         "chats": { "get": true },
-        "chatmembers": { "get": true, "post": true, "delete": true }
+        "chatmembers": {
+          "get": true,
+          "post": true,
+          "delete": true,
+          "put": true
+        }
       }
     }
   },
@@ -42,8 +47,14 @@
       "get": true,
       "delete": true
     },
+    "users": { "get": true },
     "chats": { "get": true, "post": true },
     "messages": { "get": true, "delete": true, "post": true },
-    "chatMembers": { "get": true, "post": true, "delete": true }
+    "chatMembers": {
+      "get": true,
+      "post": true,
+      "delete": true,
+      "put": true
+    }
   }
 }
