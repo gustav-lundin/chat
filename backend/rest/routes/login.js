@@ -3,11 +3,14 @@ const express = require("express");
 const { User } = require("../../models/index.js");
 const { tryCatch } = require("../../util/trycatch.js");
 const AppError = require("../../apperror");
-
+const { getAuthMiddleware } = require("../../acl/acl.js");
 const loginRouter = express.Router();
+
+const auth = getAuthMiddleware("login");
 
 loginRouter.post(
   "/",
+  auth,
   tryCatch(async (req, res) => {
     const encryptedPassword = encryptPassword(req.body.password);
     const user = await User.findOne({
@@ -29,14 +32,19 @@ loginRouter.post(
   })
 );
 
-loginRouter.get("/", (req, res) => {
-  if (req.session.user) {
-    res.json(req.session.user);
-  }
-  throw new AppError("Not logged in", 400);
-});
+loginRouter.get(
+  "/",
+  auth,
+  tryCatch((req, res) => {
+    if (req.session.user) {
+      res.json(req.session.user);
+    } else {
+      throw new AppError("Not logged in", 400);
+    }
+  })
+);
 
-loginRouter.delete("/", (req, res) => {
+loginRouter.delete("/", auth, (req, res) => {
   req.session.user = undefined;
   res.json({ success: "logged out" });
 });

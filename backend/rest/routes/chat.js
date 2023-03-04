@@ -2,13 +2,13 @@ const express = require("express");
 const chatRouter = express.Router();
 const { Chat, ChatMember, Message, User } = require("../../models/index.js");
 const { tryCatch } = require("../../util/trycatch");
-const { authorizeRequest } = require("../../acl/acl.js");
+const { getAuthMiddleware } = require("../../acl/acl.js");
 
-const routeName = "chats";
+const auth = getAuthMiddleware("chats");
 
 chatRouter.post(
   "/",
-  authorizeRequest(routeName, null),
+  auth,
   tryCatch(async (req, res) => {
     const userId = req.session.user.id;
     const chat = await Chat.create({ name: req.body.name });
@@ -25,8 +25,9 @@ chatRouter.post(
 
 chatRouter.get(
   "/all",
-  tryCatch(async (req, res, next) => {
-    const userId = 1; //req.session.user.id;
+  auth,
+  tryCatch(async (req, res) => {
+    const userId = req.session.user.id;
     const orderBy = req.query?.orderby;
     const order = [["chatMessages", "createdAt", "DESC"]];
     if (orderBy === "name") {
@@ -102,7 +103,8 @@ chatRouter.get(
 
 chatRouter.get(
   "/:chatId",
-  tryCatch(async (req, res, next) => {
+  auth,
+  tryCatch(async (req, res) => {
     const order = [["chatMessages", "createdAt", "DESC"]];
     const chat = await Chat.findByPk(req.params.chatId, {
       include: [

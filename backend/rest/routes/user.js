@@ -3,11 +3,14 @@ const userRouter = Express.Router();
 const { User } = require("../../models/index.js");
 const { tryCatch } = require("../../util/trycatch");
 const AppError = require("../../apperror");
-const { Chat } = require("../../models/index.js");
 const { Op } = require("sequelize");
+const { getAuthMiddleware } = require("../../acl/acl.js");
+
+const auth = getAuthMiddleware("users");
 
 userRouter.post(
   "/",
+  auth,
   tryCatch(async (req, res) => {
     const existingUser = await User.findOne({
       where: { email: req.body.email },
@@ -25,6 +28,7 @@ userRouter.post(
 
 userRouter.get(
   "/all",
+  auth,
   tryCatch(async (req, res) => {
     const searchQuery = req.query?.search_query;
     const whereOption =

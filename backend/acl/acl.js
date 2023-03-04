@@ -2,34 +2,20 @@ const aclRules = require("./acl-rules.json");
 const { Chat } = require("../models/index.js");
 const { ChatMember } = require("../models/index.js");
 const AppError = require("../apperror");
-const { tryCatch } = require("../util/trycatch");
 
-// const getAuthMiddleware = (route) => {
-//   return async (req, _res, next) => {
-//     // console.log("authentication turned off");
-//     // next();
-//     // return;
-//     try {
-//       let method = req.method.toLowerCase();
-//       method = method === "patch" ? "put" : method;
-//       console.log(req.params.chatId);
-//       if (req.params.chatId) {
-//         await authorizeChatRequest(route, req, method);
-//       } else {
-//         authorizeRequest(route, req, method);
-//       }
-//       next();
-//     } catch (e) {
-//       next(e);
-//     }
-//   };
-// };
-
-const authorizeRequest = (route, chatId) => {
+const getAuthMiddleware = (route) => {
   return async (req, res, next) => {
+    console.log(req.body.hello);
+    console.log(req.params.chatId);
     try {
-      if (chatId) {
-        await authorizeChatRequest(req, res, next, route, chatId);
+      if (req.params.chatId || req.body.chatId) {
+        await authorizeChatRequest(
+          req,
+          res,
+          next,
+          route,
+          req.params.chatId ?? req.body.chatId
+        );
       } else {
         let method = req.method.toLowerCase();
         method = method === "patch" ? "put" : method;
@@ -80,7 +66,7 @@ async function authorizeChatRequest(req, _res, next, route, chatId) {
       ? aclRules.userChatRoles.chatAdmin
       : aclRules.userChatRoles.chatMember;
   }
-  let allowed = aclRules.userChatRoles?.[chatUserRole]?.[route]?.[method];
+  let allowed = aclRules.user.userChatRoles?.[chatUserRole]?.[route]?.[method];
   if (!allowed) {
     throw new AppError("Access denied", 403);
   }
@@ -88,4 +74,4 @@ async function authorizeChatRequest(req, _res, next, route, chatId) {
   next();
 }
 
-exports.authorizeRequest = authorizeRequest;
+exports.getAuthMiddleware = getAuthMiddleware;

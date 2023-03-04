@@ -1,10 +1,14 @@
 const chatMemberRouter = require("express").Router();
+const { getAuthMiddleware } = require("../../acl/acl.js");
 const AppError = require("../../apperror.js");
 const { ChatMember } = require("../../models/index.js");
 const { tryCatch } = require("../../util/trycatch");
 
+const auth = getAuthMiddleware("chatmembers");
+
 chatMemberRouter.post(
   "/:chatId/:userId",
+  auth,
   tryCatch(async (req, res) => {
     const chatId = req.params.chatId;
     const userId = req.params.userId;
@@ -27,6 +31,7 @@ chatMemberRouter.post(
 
 chatMemberRouter.put(
   "/:chatId/:userId",
+  auth,
   tryCatch(async (req, res) => {
     const chatId = req.params.chatId;
     const userId = req.params.userId;
