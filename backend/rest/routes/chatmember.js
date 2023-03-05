@@ -42,8 +42,30 @@ chatMemberRouter.put(
     if (!chatMember) {
       throw new AppError("No such chat member", 404);
     }
-    chatMember.update(req.body);
-    await chatMember.save();
+    if (Object.keys(req.body).includes("inviteAccepted")) {
+      if (req.session.user.id != userId || !req.body.inviteAccepted) {
+        console.log(req.session.user.id, userId);
+        throw new AppError("Not allowed", 403);
+      }
+      await chatMember.update({
+        inviteAccepted: req.body.inviteAccepted,
+      });
+      await chatMember.save();
+    } else if (Object.keys(req.body).includes("blocked")) {
+      if (req.session.user.id == userId) {
+        throw new AppError("Not allowed", 403);
+      }
+      if (req.session.user.userRole !== "admin") {
+        const userChatMember = await ChatMember.findOne({
+          where: { chatId, userId: req.session.user.id },
+        });
+        if (userChatMember == null || !userChatMember.creator) {
+          throw new AppError("Not allowed", 403);
+        }
+      }
+      await chatMember.update({ blocked: req.body.blocked });
+      await chatMember.save();
+    }
     res.json(chatMember);
   })
 );
