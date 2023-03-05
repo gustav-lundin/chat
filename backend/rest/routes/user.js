@@ -18,10 +18,13 @@ userRouter.post(
     if (existingUser != null) {
       throw new AppError("User already exists", 400);
     }
-    if (req.body.password !== req.body.passwordConfirmation) {
-      throw new AppError("Passwords do not match", 400);
-    }
-    const user = await User.create(req.body);
+    const { firstName, lastName, email, password } = req.body;
+    const user = await User.create({
+      firstName,
+      lastName,
+      email,
+      password,
+    });
     res.json(user.dto());
   })
 );

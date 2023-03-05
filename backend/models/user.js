@@ -1,9 +1,8 @@
 const { DataTypes, Model } = require("sequelize");
-const AppError = require("../apperror");
 const sequelize = require("../sequelize");
-const { passwordIsStrong } = require("../util/password.js");
+const { validatePassword } = require("../util/password.js");
 const { encryptPassword } = require("../util/password.js");
-// const Chat = require("./chat.js");
+const { validateString } = require("../validations");
 class User extends Model {
   dto() {
     return {
@@ -24,13 +23,31 @@ User.init(
     firstName: {
       type: DataTypes.TEXT,
       allowNull: false,
-      validate: { notEmpty: true },
+      validate: {
+        notEmpty: true,
+        isValid(value) {
+          validateString(value);
+        },
+        max: 30,
+      },
+      set(value) {
+        this.setDataValue("firstName", value.toLowerCase().trim());
+      },
       field: "first_name",
     },
     lastName: {
       type: DataTypes.TEXT,
       allowNull: false,
-      validate: { notEmpty: true },
+      validate: {
+        notEmpty: true,
+        isValid(value) {
+          validateString(value);
+        },
+        max: 30,
+      },
+      set(value) {
+        this.setDataValue("lastName", value.toLowerCase().trim());
+      },
       field: "last_name",
     },
     email: {
@@ -45,15 +62,9 @@ User.init(
     password: {
       type: DataTypes.TEXT,
       allowNull: false,
-      validate: {
-        isStrong(password) {
-          const validate = passwordIsStrong(password);
-          if (!validate.isStrong) {
-            throw new AppError(validate.msg, 400);
-          }
-        },
-      },
       set(password) {
+        validateString(password);
+        validatePassword(password);
         this.setDataValue("password", encryptPassword(password));
       },
     },
@@ -72,21 +83,6 @@ User.init(
         throw new Error("Do not try to set the `fullName` value!");
       },
     },
-    // dto: {
-    //   type: DataTypes.VIRTUAL,
-    //   get() {
-    //     return {
-    //       id: this.id,
-    //       firstName: this.firstName,
-    //       lastName: this.lastName,
-    //       email: this.email,
-    //       userRole: this.userRole,
-    //     };
-    //   },
-    //   set(value) {
-    //     throw new Error("Do not try to set the `fullName` value!");
-    //   },
-    // },
   },
   { sequelize, modelName: "User", tableName: "chat_users", timestamps: false }
 );

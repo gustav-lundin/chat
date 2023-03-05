@@ -24,11 +24,10 @@ loginRouter.post(
         throw new AppError("Incorrect password", 400);
       }
       throw new AppError("Incorrect email", 400);
-    } else {
-      const dto = user.dto();
-      req.session.user = dto;
-      res.json(dto);
     }
+    const dto = user.dto();
+    req.session.user = dto;
+    res.json(dto);
   })
 );
 

@@ -1,6 +1,6 @@
 const { DataTypes, Model } = require("sequelize");
 const sequelize = require("../sequelize");
-const AppError = require("../apperror");
+const { validateString } = require("../validations.js");
 
 class Chat extends Model {}
 
@@ -11,10 +11,9 @@ Chat.init(
       allowNull: false,
       validate: {
         notEmpty: true,
+        max: 30,
         isValid(value) {
-          if (!(typeof value === "string")) {
-            throw new AppError("only string allowed for name");
-          }
+          validateString(value);
         },
       },
     },

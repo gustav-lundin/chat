@@ -5,8 +5,6 @@ const AppError = require("../apperror");
 
 const getAuthMiddleware = (route) => {
   return async (req, res, next) => {
-    console.log(req.body.hello);
-    console.log(req.params.chatId);
     try {
       if (req.params.chatId || req.body.chatId) {
         await authorizeChatRequest(

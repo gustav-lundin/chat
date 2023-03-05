@@ -23,14 +23,14 @@
   {
     "userId": 1,
     "chatId": 4,
-    "inviteAccepted": true,
+    "inviteAccepted": false,
     "blocked": false,
     "creator": false
   },
   {
     "userId": 1,
     "chatId": 5,
-    "inviteAccepted": false,
+    "inviteAccepted": true,
     "blocked": false,
     "creator": true
   },
