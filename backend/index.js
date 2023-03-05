@@ -17,10 +17,6 @@ const syncDb = async () => {
     .catch(() => console.log("database creation failed"));
 };
 
-const runSeeder = async () => {
-  await seeder();
-};
-
 (async () => {
   await syncDb();
   await seeder();
@@ -31,6 +27,25 @@ app.use(express.json({ limit: "100MB" }));
 app.listen(port, () => console.log(`Listening on http://localhost: ${port}`));
 
 useSession(app);
+app.use((error, req, res, next) => {
+  if (error) {
+    throw new AppError("Something went wrong with your JSON", 400);
+  } else {
+    next();
+  }
+});
+app.use("*", (req, res, next) => {
+  const data = Object.entries(req.body);
+  for (let [key, value] of data) {
+    if (typeof value === "string") {
+      value = value.replace(/</g, "&lt;");
+      value = value.replace(/>/g, "&gt;");
+    }
+    data[key] = value;
+  }
+  req.body = data;
+  next();
+});
 app.use("/api", router);
 app.use("*", (req, res) => {
   throw new AppError("Not found", 404);
