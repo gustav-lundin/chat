@@ -24,8 +24,6 @@ const syncDb = async () => {
 
 app.use(express.json({ limit: "100MB" }));
 
-app.listen(port, () => console.log(`Listening on http://localhost: ${port}`));
-
 useSession(app);
 app.use((error, req, res, next) => {
   if (error) {
@@ -51,3 +49,5 @@ app.use("*", (req, res) => {
   throw new AppError("Not found", 404);
 });
 app.use("*", errorHandler);
+
+app.listen(port, () => console.log(`Listening on http://localhost: ${port}`));
