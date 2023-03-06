@@ -12,13 +12,18 @@ loginRouter.post(
   "/",
   auth,
   tryCatch(async (req, res) => {
-    const encryptedPassword = encryptPassword(req.body.password);
+    const password = req.body.password;
+    const email = req.body.email;
+    if (typeof password !== "string") {
+      throw new AppError("invalid password", 400);
+    }
+    const encryptedPassword = encryptPassword(password);
     const user = await User.findOne({
-      where: { password: encryptedPassword, email: req.body.email },
+      where: { password: encryptedPassword, email },
     });
     if (user == null) {
       const existingUser = await User.findOne({
-        where: { email: req.body.email },
+        where: { email },
       });
       if (existingUser) {
         throw new AppError("Incorrect password", 400);
