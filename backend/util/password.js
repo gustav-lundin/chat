@@ -32,8 +32,9 @@ exports.validatePassword = (password) => {
   let msg = "";
   if (password.length < 8) {
     msg = "Password too short";
-  }
-  if (Array.from(password).every((char) => isLetter(char))) {
+  } else if (password.length > 256) {
+    msg = "Password is too long";
+  } else if (Array.from(password).every((char) => isLetter(char))) {
     msg = "Password must contain a digit or a special character";
   }
   if (msg !== "") {

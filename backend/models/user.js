@@ -28,7 +28,7 @@ User.init(
         isValid(value) {
           validateString(value);
         },
-        max: 30,
+        max: 64,
       },
       set(value) {
         this.setDataValue("firstName", value.toLowerCase().trim());
@@ -43,7 +43,7 @@ User.init(
         isValid(value) {
           validateString(value);
         },
-        max: 30,
+        max: 64,
       },
       set(value) {
         this.setDataValue("lastName", value.toLowerCase().trim());
@@ -54,7 +54,7 @@ User.init(
       type: DataTypes.TEXT,
       allowNull: false,
       unique: true,
-      validate: { isEmail: true },
+      validate: { isEmail: true, max: 254 },
       set(value) {
         this.setDataValue("email", value.toLowerCase().trim());
       },
