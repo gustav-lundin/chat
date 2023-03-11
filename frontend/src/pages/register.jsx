@@ -2,7 +2,11 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { UserContext } from "../App";
 import { useNavigate } from "react-router-dom";
 import { Form, Row, Col, Button, Stack, Alert } from "react-bootstrap";
-import { validateName, validatePassword } from "../util/validations.js";
+import {
+  validateEmail,
+  validateName,
+  validatePassword,
+} from "../util/validations.js";
 import { fetchJson } from "../fetch";
 
 function Register(props) {
@@ -138,7 +142,7 @@ function validateRegistration(
   if (lastNameErr !== "") {
     return lastNameErr;
   }
-  const emailErr = validateName(email, "email");
+  const emailErr = validateEmail(email);
   if (emailErr !== "") {
     return emailErr;
   }

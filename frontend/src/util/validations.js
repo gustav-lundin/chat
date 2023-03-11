@@ -18,12 +18,17 @@ function validateName(name, label) {
   if (label !== "email" && !Array.from(name).every((char) => isLetter(char))) {
     return `${label} can only contain characters`;
   }
-  let maxLength = 64;
-  if (label === "email") {
-    maxLength = 254;
-  }
+  const maxLength = 64;
   if (name.length > maxLength) {
     return `${label} is too long`;
+  }
+  return "";
+}
+
+function validateEmail(email) {
+  const maxLength = 254;
+  if (email.length > maxLength) {
+    return "Email is too long";
   }
   return "";
 }
@@ -32,4 +37,4 @@ function isLetter(char) {
   return char.toLowerCase() !== char.toUpperCase();
 }
 
-export { validatePassword, validateName };
+export { validatePassword, validateName, validateEmail };
