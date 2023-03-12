@@ -69,7 +69,7 @@ function Chats(props) {
           {chats.active?.length > 0 ? (
             chats.active?.map((chat) => (
               <Row>
-                <Link to={`/chats/:${chat.id}`}>{chat.name}</Link>
+                <Link to={`/chats/${chat.id}`}>{chat.name}</Link>
               </Row>
             ))
           ) : (
@@ -83,7 +83,7 @@ function Chats(props) {
           {chats.invited?.length > 0 ? (
             chats.invited?.map((chat) => (
               <Row>
-                <Link to={`/chats/:${chat.id}`}>{chat.name}</Link>
+                <Link to={`/chats/${chat.id}`}>{chat.name}</Link>
               </Row>
             ))
           ) : (
@@ -97,7 +97,7 @@ function Chats(props) {
           {chats.blocked?.length > 0 ? (
             chats.blocked?.map((chat) => (
               <Row>
-                <Link to={`/chats/:${chat.id}`}>{chat.name}</Link>
+                <Link to={`/chats/${chat.id}`}>{chat.name}</Link>
               </Row>
             ))
           ) : (

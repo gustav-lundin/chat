@@ -3,6 +3,8 @@ const { getAuthMiddleware } = require("../../acl/acl.js");
 const AppError = require("../../apperror.js");
 const { Message } = require("../../models/index.js");
 const { tryCatch } = require("../../util/trycatch");
+const { broadcast } = require("./sse.js");
+const { User } = require("../../models/index.js");
 
 const auth = getAuthMiddleware("messages");
 
@@ -10,11 +12,16 @@ messageRouter.post(
   "/:chatId",
   auth,
   tryCatch(async (req, res) => {
+    const chatId = req.params.chatId;
     const message = await Message.create({
       content: req.body.content,
-      chatId: req.params.chatId,
+      chatId,
       userId: req.session.user.id,
     });
+    const messageWithUser = await Message.findByPk(message.id, {
+      include: { model: User, attributes: User.dtoKeys() },
+    });
+    broadcast("new-message", messageWithUser, chatId);
     res.json(message.toJSON());
   })
 );

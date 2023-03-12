@@ -28,7 +28,8 @@
       "chatMember": {
         "messages": { "post": true },
         "chats": { "get": true },
-        "chatmembers": { "get": true, "put": true }
+        "chatmembers": { "get": true, "put": true },
+        "sse": { "get": true }
       },
       "chatAdmin": {
         "messages": { "post": true },
@@ -38,7 +39,8 @@
           "post": true,
           "delete": true,
           "put": true
-        }
+        },
+        "sse": { "get": true }
       }
     }
   },
@@ -55,6 +57,7 @@
       "post": true,
       "delete": true,
       "put": true
-    }
+    },
+    "sse": { "get": true }
   }
 }

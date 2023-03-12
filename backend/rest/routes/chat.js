@@ -105,7 +105,7 @@ chatRouter.get(
   "/:chatId",
   auth,
   tryCatch(async (req, res) => {
-    const order = [["chatMessages", "createdAt", "DESC"]];
+    const order = [["chatMessages", "createdAt", "ASC"]];
     const chat = await Chat.findByPk(req.params.chatId, {
       include: [
         { model: User, as: "chatMembers", attributes: User.dtoKeys() },
