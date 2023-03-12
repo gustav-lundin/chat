@@ -99,7 +99,7 @@ function Chat(props) {
         <Stack
           style={{
             overflowY: "scroll",
-            maxHeight: "60vh",
+            height: "60vh",
           }}
           ref={messageRef}
         >

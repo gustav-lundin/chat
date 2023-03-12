@@ -15,6 +15,7 @@ import {
   Nav,
   Navbar,
 } from "react-bootstrap";
+import Users from "./pages/users";
 
 export const UserContext = createContext(null);
 
@@ -50,6 +51,7 @@ function App() {
             {user ? (
               <>
                 <Nav.Link href="/chats">Chats</Nav.Link>
+                <Nav.Link href="/users">Users</Nav.Link>
 
                 <Button
                   variant="light"
@@ -74,6 +76,7 @@ function App() {
                 <Route path="/" element={<Chats />} />
                 <Route path="/chats/:chatId" element={<Chat />} />
                 <Route path="/chats" element={<Chats />} />
+                <Route path="/users" element={<Users />} />
               </>
             ) : (
               <>

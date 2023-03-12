@@ -15,12 +15,23 @@ function validatePassword(password, passwordConfirm) {
 }
 
 function validateName(name, label) {
-  if (label !== "email" && !Array.from(name).every((char) => isLetter(char))) {
+  if (!Array.from(name).every((char) => isLetter(char))) {
     return `${label} can only contain characters`;
   }
   const maxLength = 64;
   if (name.length > maxLength) {
     return `${label} is too long`;
+  }
+  return "";
+}
+
+function validateChatName(name) {
+  const maxLength = 64;
+  if (name.trim() === "") {
+    return "Enter a chat name";
+  }
+  if (name.length > maxLength) {
+    return "Chat name is too long";
   }
   return "";
 }
@@ -37,4 +48,4 @@ function isLetter(char) {
   return char.toLowerCase() !== char.toUpperCase();
 }
 
-export { validatePassword, validateName, validateEmail };
+export { validatePassword, validateName, validateEmail, validateChatName };
