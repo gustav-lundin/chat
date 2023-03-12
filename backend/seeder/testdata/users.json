@@ -5,7 +5,7 @@
     "lastName": "Temby",
     "email": "test@test.com",
     "password": "test1234",
-    "userRole": "user"
+    "userRole": "admin"
   },
   {
     "id": 2,

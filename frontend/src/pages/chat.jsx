@@ -76,6 +76,11 @@ function Chat(props) {
       console.log("[disconnect]", data);
     });
 
+    sse.addEventListener("keep-alive", (message) => {
+      let data = JSON.parse(message.data);
+      console.log("keepalive", data);
+    });
+
     sse.addEventListener("new-message", (message) => {
       let data = JSON.parse(message.data);
       console.log("[new-message]", data);
@@ -93,9 +98,10 @@ function Chat(props) {
         <h1>{chat.name}</h1>
         <Stack
           style={{
-            overflowY: "auto",
-            maxHeight: "fit-content",
+            overflowY: "scroll",
+            maxHeight: "60vh",
           }}
+          ref={messageRef}
         >
           {chat.chatMessages?.map((m) => (
             <Row
@@ -110,7 +116,11 @@ function Chat(props) {
                 <p style={{ fontWeight: "bold" }}>
                   {`${new Date(m.createdAt).toLocaleString()} ${
                     m.User.firstName
-                  } ${m.User.lastName}:`}
+                  } ${m.User.lastName} `}
+                  <span style={{ color: "red" }}>
+                    {m.User.userRole === "admin" ? "Admin" : ""}
+                  </span>
+                  :
                 </p>
                 <p>{m.content}</p>
               </Col>

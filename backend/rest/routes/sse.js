@@ -45,9 +45,6 @@ sseRouter.get("/:chatId", auth, (req, res) => {
 });
 
 function broadcast(event, data, chatId = null) {
-  // for (let res of connections) {
-  //   res.write("event:" + event + "\ndata:" + JSON.stringify(data) + "\n\n");
-  // }
   let responses = [];
   if (chatId == null) {
     const allUserIdToRes = chatIdToUserIdToRes.values();

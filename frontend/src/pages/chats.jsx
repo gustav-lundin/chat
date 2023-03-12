@@ -36,10 +36,6 @@ function Chats(props) {
     })();
   }, [sortByIndex]);
 
-  function onSortSelect(index) {
-    setSortByIndex(index);
-  }
-
   return (
     <Row className="justify-content-center">
       <Col xs={9} md={6}>
@@ -56,6 +52,7 @@ function Chats(props) {
                     eventKey={i}
                     onClick={() => setSortByIndex(i)}
                     active={i === sortByIndex}
+                    key={i}
                   >
                     {o}
                   </Dropdown.Item>
@@ -68,7 +65,7 @@ function Chats(props) {
           </Row>
           {chats.active?.length > 0 ? (
             chats.active?.map((chat) => (
-              <Row>
+              <Row key={chat.id}>
                 <Link to={`/chats/${chat.id}`}>{chat.name}</Link>
               </Row>
             ))
@@ -82,7 +79,7 @@ function Chats(props) {
           </Row>
           {chats.invited?.length > 0 ? (
             chats.invited?.map((chat) => (
-              <Row>
+              <Row key={chat.id}>
                 <Link to={`/chats/${chat.id}`}>{chat.name}</Link>
               </Row>
             ))
@@ -96,7 +93,7 @@ function Chats(props) {
           </Row>
           {chats.blocked?.length > 0 ? (
             chats.blocked?.map((chat) => (
-              <Row>
+              <Row key={chat.id}>
                 <Link to={`/chats/${chat.id}`}>{chat.name}</Link>
               </Row>
             ))
