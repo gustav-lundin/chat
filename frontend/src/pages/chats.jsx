@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { fetchJson } from "../fetch";
 import {
   Stack,
@@ -10,8 +10,10 @@ import {
   DropdownButton,
   Dropdown,
   ButtonGroup,
+  Form,
 } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { validateChatName } from "../util/validations";
 
 const sortByOptions = ["Name", "User activity", "Chat activity"];
 const sortByRoutes = ["name", "useractivity", "chatactivity"];
@@ -19,6 +21,8 @@ const sortByRoutes = ["name", "useractivity", "chatactivity"];
 function Chats(props) {
   const [chats, setChats] = useState({});
   const [sortByIndex, setSortByIndex] = useState(0);
+  const chatNameRef = useRef();
+  const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
@@ -35,6 +39,27 @@ function Chats(props) {
       }
     })();
   }, [sortByIndex]);
+
+  async function onSubmitNewChat(e) {
+    e.preventDefault();
+    const chatName = chatNameRef.current.value;
+    const validationError = validateChatName(chatName);
+    if (validationError !== "") {
+      chatNameRef.current.value = "";
+      chatNameRef.current.placeholder = validationError;
+      return;
+    }
+    try {
+      const data = await fetchJson("/chats", "POST", { name: chatName });
+      if (data.error) {
+        console.log("error");
+        return;
+      }
+      navigate(`/chats/${data.chat.id}`);
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
   return (
     <Row className="justify-content-center">
@@ -58,6 +83,24 @@ function Chats(props) {
                   </Dropdown.Item>
                 ))}
               </DropdownButton>
+            </Col>
+            <Col xs="auto">
+              <Form onSubmit={onSubmitNewChat}>
+                <Row>
+                  <Col xs="auto">
+                    <Form.Group>
+                      <Form.Control
+                        type="text"
+                        placeholder="Enter chat name"
+                        ref={chatNameRef}
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col xs="auto">
+                    <Button type="submit">New chat</Button>
+                  </Col>
+                </Row>
+              </Form>
             </Col>
           </Row>
           <Row>
