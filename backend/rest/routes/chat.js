@@ -27,6 +27,7 @@ chatRouter.get(
   "/all",
   auth,
   tryCatch(async (req, res) => {
+    const isAdmin = req.session.user.userRole === "admin";
     const userId = req.session.user.id;
     const orderBy = req.query?.orderby;
     const order = [["chatMessages", "createdAt", "DESC"]];
@@ -39,7 +40,7 @@ chatRouter.get(
           model: User,
           as: "chatMembers",
           attributes: User.dtoKeys(),
-          where: { id: userId },
+          where: isAdmin ? {} : { id: userId },
         },
         {
           model: Message,
@@ -83,7 +84,10 @@ chatRouter.get(
         }
       });
     }
-
+    if (isAdmin) {
+      res.json(memberChats);
+      return;
+    }
     const invited = [];
     const blocked = [];
     const active = [];

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { fetchJson } from "../fetch.js";
 import {
   Stack,
@@ -14,6 +14,7 @@ import {
 } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { validateChatName } from "../util/validations.js";
+import { UserContext } from "../App.jsx";
 
 const sortByOptions = ["Name", "User activity", "Chat activity"];
 const sortByRoutes = ["name", "useractivity", "chatactivity"];
@@ -22,6 +23,7 @@ function Chats(props) {
   const [chats, setChats] = useState({});
   const [sortByIndex, setSortByIndex] = useState(0);
   let [stateCounter, setStateCounter] = useState(0);
+  const { user } = useContext(UserContext);
   const chatNameRef = useRef();
   const navigate = useNavigate();
 
@@ -117,44 +119,63 @@ function Chats(props) {
               </Form>
             </Col>
           </Row>
-          <Row>
-            <h1>Active</h1>
-          </Row>
-          {chats.active?.length > 0 ? (
-            chats.active?.map((chat) => (
-              <Row key={chat.id}>
-                <Link to={`/chats/${chat.id}`}>{chat.name}</Link>
+          {user.userRole !== "admin" ? (
+            <Stack gap={3}>
+              <Row>
+                <h1>Active</h1>
               </Row>
-            ))
-          ) : (
-            <h4>No chats found..</h4>
-          )}
-        </Stack>
-        <Stack gap={3}>
-          <Row>
-            <h1>Invited</h1>
-          </Row>
-          {chats.invited?.length > 0 ? (
-            chats.invited?.map((chat) => (
-              <Row key={chat.id} className="justify-content-between">
-                <Col xs="auto">{chat.name}</Col>
-                <Col xs="auto">
-                  <Button onClick={() => acceptInvite(chat.id)}>Accept</Button>
-                </Col>
+              {chats.active?.length > 0 ? (
+                chats.active?.map((chat) => (
+                  <Row key={chat.id}>
+                    <Link to={`/chats/${chat.id}`}>{chat.name}</Link>
+                  </Row>
+                ))
+              ) : (
+                <p>No chats found..</p>
+              )}
+
+              <Row>
+                <h1>Invited</h1>
               </Row>
-            ))
+              {chats.invited?.length > 0 ? (
+                chats.invited?.map((chat) => (
+                  <Row key={chat.id} className="justify-content-between">
+                    <Col xs="auto">
+                      <p>{chat.name}</p>
+                    </Col>
+                    <Col xs="auto">
+                      <Button onClick={() => acceptInvite(chat.id)}>
+                        Accept
+                      </Button>
+                    </Col>
+                  </Row>
+                ))
+              ) : (
+                <p>No chats found..</p>
+              )}
+              <Row>
+                <h1>Blocked</h1>
+              </Row>
+              {chats.blocked?.length > 0 ? (
+                chats.blocked?.map((chat) => (
+                  <Row key={chat.id}>{chat.name}</Row>
+                ))
+              ) : (
+                <p>No chats found..</p>
+              )}
+            </Stack>
           ) : (
-            <h4>No chats found..</h4>
-          )}
-        </Stack>
-        <Stack gap={3}>
-          <Row>
-            <h1>Blocked</h1>
-          </Row>
-          {chats.blocked?.length > 0 ? (
-            chats.blocked?.map((chat) => <Row key={chat.id}>{chat.name}</Row>)
-          ) : (
-            <h4>No chats found..</h4>
+            <Stack>
+              {chats.length > 0 ? (
+                chats.map((chat) => (
+                  <Row key={chat.id}>
+                    <Link to={`/chats/${chat.id}`}>{chat.name}</Link>
+                  </Row>
+                ))
+              ) : (
+                <p>No chats found..</p>
+              )}
+            </Stack>
           )}
         </Stack>
       </Col>
