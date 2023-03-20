@@ -21,6 +21,7 @@ const sortByRoutes = ["name", "useractivity", "chatactivity"];
 function Chats(props) {
   const [chats, setChats] = useState({});
   const [sortByIndex, setSortByIndex] = useState(0);
+  let [stateCounter, setStateCounter] = useState(0);
   const chatNameRef = useRef();
   const navigate = useNavigate();
 
@@ -38,7 +39,7 @@ function Chats(props) {
         console.log(e);
       }
     })();
-  }, [sortByIndex]);
+  }, [sortByIndex, stateCounter]);
 
   async function onSubmitNewChat(e) {
     e.preventDefault();
@@ -61,11 +62,24 @@ function Chats(props) {
     }
   }
 
+  async function acceptInvite(chatId) {
+    try {
+      const data = await fetchJson(`/chatmembers/accept/${chatId}`, "PUT");
+      console.log(data);
+      if (data.error) {
+        return;
+      }
+      setStateCounter(++stateCounter);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   return (
     <Row className="justify-content-center">
       <Col xs={9} md={6}>
         <Stack gap={3}>
-          <Row>
+          <Row className="justify-content-between">
             <Col xs="auto">
               <DropdownButton
                 as={ButtonGroup}
@@ -113,7 +127,7 @@ function Chats(props) {
               </Row>
             ))
           ) : (
-            <h2>No chats found..</h2>
+            <h4>No chats found..</h4>
           )}
         </Stack>
         <Stack gap={3}>
@@ -122,12 +136,15 @@ function Chats(props) {
           </Row>
           {chats.invited?.length > 0 ? (
             chats.invited?.map((chat) => (
-              <Row key={chat.id}>
-                <Link to={`/chats/${chat.id}`}>{chat.name}</Link>
+              <Row key={chat.id} className="justify-content-between">
+                <Col xs="auto">{chat.name}</Col>
+                <Col xs="auto">
+                  <Button onClick={() => acceptInvite(chat.id)}>Accept</Button>
+                </Col>
               </Row>
             ))
           ) : (
-            <h2>No chats found..</h2>
+            <h4>No chats found..</h4>
           )}
         </Stack>
         <Stack gap={3}>
@@ -135,11 +152,7 @@ function Chats(props) {
             <h1>Blocked</h1>
           </Row>
           {chats.blocked?.length > 0 ? (
-            chats.blocked?.map((chat) => (
-              <Row key={chat.id}>
-                <Link to={`/chats/${chat.id}`}>{chat.name}</Link>
-              </Row>
-            ))
+            chats.blocked?.map((chat) => <Row key={chat.id}>{chat.name}</Row>)
           ) : (
             <h4>No chats found..</h4>
           )}

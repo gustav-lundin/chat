@@ -60,6 +60,9 @@ async function authorizeChatRequest(req, _res, next, route, chatId) {
     ) {
       throw new AppError("Invite not accepted", 405);
     }
+    if (chatMember.blocked) {
+      throw new AppError("You have been blocked", 403);
+    }
     chatUserRole = chatMember.creator
       ? aclRules.userChatRoles.chatAdmin
       : aclRules.userChatRoles.chatMember;
