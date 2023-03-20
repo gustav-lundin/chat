@@ -47,6 +47,7 @@ userRouter.get(
     const users = await User.findAll({
       where: whereOption,
       attributes: User.dtoKeys(),
+      order: [["firstName", "ASC"]],
     });
     res.json(users);
   })

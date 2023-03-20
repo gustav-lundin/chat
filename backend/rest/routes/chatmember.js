@@ -37,6 +37,8 @@ chatMemberRouter.put(
   "/block/:chatId/:userId",
   auth,
   tryCatch(async (req, res) => {
+    const chatId = req.params.chatId;
+    const userId = req.params.userId;
     const chatMember = await ChatMember.findOne({ where: { chatId, userId } });
     if (!chatMember) {
       throw new AppError("No such chat member", 404);

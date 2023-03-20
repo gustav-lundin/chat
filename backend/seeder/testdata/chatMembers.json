@@ -18,7 +18,7 @@
     "chatId": 3,
     "inviteAccepted": true,
     "blocked": false,
-    "creator": false
+    "creator": true
   },
   {
     "userId": 1,
