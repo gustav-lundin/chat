@@ -27,15 +27,17 @@ messageRouter.post(
 );
 
 messageRouter.delete(
-  "/:messageId",
+  "/:chatId/:messageId",
   auth,
   tryCatch(async (req, res) => {
+    const chatId = req.params.chatId;
     const messageId = req.params.messageId;
     const message = await Message.findByPk(messageId);
     if (!message) {
       throw new AppError("Message not found", 404);
     } else {
       await message.destroy();
+      broadcast("deleted-message", message, chatId);
       res.json({ status: "ok" });
     }
   })

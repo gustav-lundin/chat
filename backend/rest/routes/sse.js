@@ -2,7 +2,6 @@ const sseRouter = require("express").Router();
 const { getAuthMiddleware } = require("../../acl/acl.js");
 
 ///
-let connections = [];
 let chatIdToUserIdToRes = new Map();
 
 const auth = getAuthMiddleware("sse");

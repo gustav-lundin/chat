@@ -16,6 +16,7 @@ import { UserContext } from "../App.jsx";
 
 function Chat(props) {
   const { user } = useContext(UserContext);
+  const isAdmin = user.userRole === "admin";
   const { chatId } = useParams();
   const navigate = useNavigate();
   const [chat, setChat] = useState({
@@ -25,7 +26,6 @@ function Chat(props) {
     chatMembers: [],
   });
   const messageRef = useRef();
-  const [isAdmin, setIsAdmin] = useState(false);
   const [isCreator, setIsCreator] = useState(false);
   const [hasChatAdminRights, setHasChatAdminRights] = useState(false);
   const [blockedChatMemberIds, setBlockedChatMemberIds] = useState(new Set());
@@ -73,7 +73,6 @@ function Chat(props) {
         console.assert(creator !== undefined);
         if (user.userRole == "admin") {
           setHasChatAdminRights(true);
-          setIsAdmin(true);
         }
         if (user.id == creator.id) {
           setHasChatAdminRights(true);
@@ -121,6 +120,25 @@ function Chat(props) {
         return newState;
       });
     });
+
+    sse.addEventListener("deleted-message", (message) => {
+      let data = JSON.parse(message.data);
+      console.log("[deleted-message]", data);
+      setChat((preState) => {
+        const chatMessages = [...preState.chatMessages];
+        let deletedIndex = -1;
+        for (let i = 0; i < chatMessages.length; i++) {
+          const message = chatMessages[i];
+          if (message.id === data.id) {
+            deletedIndex = i;
+            break;
+          }
+        }
+        console.assert(deletedIndex !== -1);
+        chatMessages.splice(deletedIndex, 1);
+        return { ...preState, chatMessages };
+      });
+    });
     return () => sse.close();
   }, []);
 
@@ -144,6 +162,18 @@ function Chat(props) {
         }
         return newState;
       });
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  async function deleteMessage(messageId) {
+    try {
+      const data = await fetchJson(
+        `messages/${chat.id}/${messageId}`,
+        "DELETE"
+      );
+      console.log(data);
     } catch (e) {
       console.log(e);
     }
@@ -235,18 +265,29 @@ function Chat(props) {
                 marginBottom: "10px",
               }}
             >
-              <Col>
-                <p style={{ fontWeight: "bold" }}>
-                  {`${new Date(m.createdAt).toLocaleString()} ${
-                    m.User.firstName
-                  } ${m.User.lastName} `}
-                  <span style={{ color: "red" }}>
-                    {m.User.userRole === "admin" ? "Admin" : ""}
-                  </span>
-                  :
-                </p>
+              <Row className="justify-content-stretch">
+                <Col xs="auto">
+                  <p style={{ fontWeight: "bold" }}>
+                    {`${new Date(m.createdAt).toLocaleString()} ${
+                      m.User.firstName
+                    } ${m.User.lastName} `}
+                    <span style={{ color: "red" }}>
+                      {m.User.userRole === "admin" ? "Admin" : ""}
+                    </span>
+                    :
+                  </p>
+                </Col>
+                {isAdmin ? (
+                  <Col xs="auto">
+                    <Button onClick={() => deleteMessage(m.id)}>Delete</Button>
+                  </Col>
+                ) : (
+                  ""
+                )}
+              </Row>
+              <Row>
                 <p>{m.content}</p>
-              </Col>
+              </Row>
             </Row>
           ))}
         </Stack>

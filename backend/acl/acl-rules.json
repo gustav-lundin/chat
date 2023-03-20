@@ -37,7 +37,6 @@
         "chatmembers": {
           "get": true,
           "post": true,
-          "delete": true,
           "put": true
         },
         "sse": { "get": true }
@@ -52,7 +51,7 @@
     "users": { "get": true },
     "chats": { "get": true, "post": true },
     "messages": { "get": true, "delete": true, "post": true },
-    "chatMembers": {
+    "chatmembers": {
       "get": true,
       "post": true,
       "delete": true,
