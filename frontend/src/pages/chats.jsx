@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { fetchJson } from "../fetch";
+import { fetchJson } from "../fetch.js";
 import {
   Stack,
   Container,
@@ -13,7 +13,7 @@ import {
   Form,
 } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import { validateChatName } from "../util/validations";
+import { validateChatName } from "../util/validations.js";
 
 const sortByOptions = ["Name", "User activity", "Chat activity"];
 const sortByRoutes = ["name", "useractivity", "chatactivity"];
@@ -55,7 +55,7 @@ function Chats(props) {
         console.log("error");
         return;
       }
-      navigate(`/chats/${data.chat.id}`);
+      navigate("/users", { state: { chatId: data.chat.id } });
     } catch (e) {
       console.log(e);
     }
@@ -77,7 +77,7 @@ function Chats(props) {
                     eventKey={i}
                     onClick={() => setSortByIndex(i)}
                     active={i === sortByIndex}
-                    key={i}
+                    key={o}
                   >
                     {o}
                   </Dropdown.Item>
@@ -91,7 +91,7 @@ function Chats(props) {
                     <Form.Group>
                       <Form.Control
                         type="text"
-                        placeholder="Enter chat name"
+                        placeholder="Enter new chat name"
                         ref={chatNameRef}
                       />
                     </Form.Group>
