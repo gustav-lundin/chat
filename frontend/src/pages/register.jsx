@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { UserContext } from "../App";
+import { UserContext } from "../App.jsx";
 import { useNavigate } from "react-router-dom";
 import { Form, Row, Col, Button, Stack, Alert } from "react-bootstrap";
 import {
@@ -7,7 +7,7 @@ import {
   validateName,
   validatePassword,
 } from "../util/validations.js";
-import { fetchJson } from "../fetch";
+import { fetchJson } from "../fetch.js";
 
 function Register(props) {
   const { user, setUser } = useContext(UserContext);

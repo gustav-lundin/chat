@@ -9,9 +9,9 @@ import {
 } from "react-bootstrap";
 
 import { useContext, useState, useRef } from "react";
-import { UserContext } from "../App";
+import { UserContext } from "../App.jsx";
 import { useNavigate } from "react-router-dom";
-import { fetchJson } from "../fetch";
+import { fetchJson } from "../fetch.js";
 
 function Login(props) {
   const { user, setUser } = useContext(UserContext);
