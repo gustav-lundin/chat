@@ -3,6 +3,7 @@ const { getAuthMiddleware } = require("../../acl/acl.js");
 const AppError = require("../../apperror.js");
 const { ChatMember, User } = require("../../models/index.js");
 const { tryCatch } = require("../../util/trycatch");
+const { broadcast } = require("./sse.js");
 
 const auth = getAuthMiddleware("chatmembers");
 
@@ -56,6 +57,7 @@ chatMemberRouter.put(
     }
     await chatMember.update({ blocked: !chatMember.blocked });
     await chatMember.save();
+    broadcast("user-blocked", chatMember, chatId);
     res.json(chatMember);
   })
 );

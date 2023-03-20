@@ -28,7 +28,6 @@ function Chat(props) {
   const messageRef = useRef();
   const [isCreator, setIsCreator] = useState(false);
   const [hasChatAdminRights, setHasChatAdminRights] = useState(false);
-  const [blockedChatMemberIds, setBlockedChatMemberIds] = useState(new Set());
 
   useEffect(() => {
     const listener = (event) => {
@@ -78,13 +77,6 @@ function Chat(props) {
           setHasChatAdminRights(true);
           setIsCreator(true);
         }
-        const blockedMemberIds = new Set();
-        for (const chatMember of chat.chatMembers) {
-          if (chatMember.ChatMember.blocked) {
-            blockedMemberIds.add(chatMember.id);
-          }
-        }
-        setBlockedChatMemberIds(blockedMemberIds);
         setChat(chat);
       } catch (e) {
         console.log(e);
@@ -125,6 +117,7 @@ function Chat(props) {
       let data = JSON.parse(message.data);
       console.log("[deleted-message]", data);
       setChat((preState) => {
+        // just use filter
         const chatMessages = [...preState.chatMessages];
         let deletedIndex = -1;
         for (let i = 0; i < chatMessages.length; i++) {
@@ -139,6 +132,24 @@ function Chat(props) {
         return { ...preState, chatMessages };
       });
     });
+
+    sse.addEventListener("user-blocked", (chatMember) => {
+      let data = JSON.parse(chatMember.data);
+      console.log("[user-blocked]", data);
+      if (data.userId === user.id && data.blocked) {
+        navigate("/blocked");
+      }
+      setChat((preState) => {
+        const chatMembers = preState.chatMembers.map((member) => {
+          if (member.id === data.userId) {
+            return { ...member, ChatMember: data };
+          }
+          return member;
+        });
+        return { ...preState, chatMembers };
+      });
+    });
+
     return () => sse.close();
   }, []);
 
@@ -153,15 +164,6 @@ function Chat(props) {
       if (data.error) {
         return;
       }
-      setBlockedChatMemberIds((pre) => {
-        const newState = new Set(pre);
-        if (blocked) {
-          newState.add(userId);
-        } else {
-          newState.delete(userId);
-        }
-        return newState;
-      });
     } catch (e) {
       console.log(e);
     }
@@ -194,7 +196,7 @@ function Chat(props) {
                 title="Block member"
               >
                 {chat.chatMembers
-                  .filter((cm) => !blockedChatMemberIds.has(cm.id))
+                  .filter((cm) => !cm.ChatMember.blocked)
                   .map((cm, i) => {
                     if (cm.ChatMember.creator) {
                       return "";
@@ -212,7 +214,7 @@ function Chat(props) {
                   })}
                 <Dropdown.Divider />
                 {chat.chatMembers
-                  .filter((cm) => blockedChatMemberIds.has(cm.id))
+                  .filter((cm) => cm.ChatMember.blocked)
                   .map((cm, i) => {
                     if (cm.ChatMember.creator) {
                       return "";

@@ -19,7 +19,9 @@ sseRouter.get("/:chatId", auth, (req, res) => {
 
   req.on("close", () => {
     userIdToRes.delete(userId);
-
+    if (userIdToRes.size === 0) {
+      chatIdToUserIdToRes.delete(chatId);
+    }
     broadcast(
       "disconnect",
       {
@@ -43,7 +45,7 @@ sseRouter.get("/:chatId", auth, (req, res) => {
   );
 });
 
-function broadcast(event, data, chatId = null) {
+function broadcast(event, data, chatId = null, userId = null) {
   let responses = [];
   if (chatId == null) {
     const allUserIdToRes = chatIdToUserIdToRes.values();
@@ -53,9 +55,14 @@ function broadcast(event, data, chatId = null) {
       }
     }
   } else {
-    responses = chatIdToUserIdToRes.has(chatId)
-      ? chatIdToUserIdToRes.get(chatId).values()
-      : [];
+    console.assert(chatIdToUserIdToRes.has(chatId));
+    const userIdToRes = chatIdToUserIdToRes.get(chatId);
+    if (userId == null) {
+      responses = userIdToRes.values();
+    } else {
+      console.assert(userIdToRes.has(userId));
+      responses = [userIdToRes.get(userId)];
+    }
   }
   for (const res of responses) {
     res.write("event:" + event + "\ndata:" + JSON.stringify(data) + "\n\n");
