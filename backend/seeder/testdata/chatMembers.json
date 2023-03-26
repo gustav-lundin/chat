@@ -11,7 +11,7 @@
     "chatId": 2,
     "inviteAccepted": true,
     "blocked": false,
-    "creator": false
+    "creator": true
   },
   {
     "userId": 1,
@@ -60,7 +60,7 @@
     "chatId": 4,
     "inviteAccepted": true,
     "blocked": false,
-    "creator": false
+    "creator": true
   },
   {
     "userId": 2,
@@ -74,7 +74,7 @@
     "chatId": 1,
     "inviteAccepted": true,
     "blocked": false,
-    "creator": false
+    "creator": true
   },
   {
     "userId": 3,
