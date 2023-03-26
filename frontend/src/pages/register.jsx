@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { UserContext } from "../App.jsx";
 import { useNavigate } from "react-router-dom";
 import { Form, Row, Col, Button, Stack, Alert } from "react-bootstrap";
@@ -9,8 +9,8 @@ import {
 } from "../util/validations.js";
 import { fetchJson } from "../fetch.js";
 
-function Register(props) {
-  const { user, setUser } = useContext(UserContext);
+function Register() {
+  const { setUser } = useContext(UserContext);
   const [error, setError] = useState("");
   const firstNameRef = useRef();
   const lastNameRef = useRef();
@@ -37,23 +37,18 @@ function Register(props) {
       setError(error);
       return;
     }
-    try {
-      const user = await fetchJson("users", "POST", {
-        firstName,
-        lastName,
-        email,
-        password,
-      });
-      console.log(user);
-      if (user.error) {
-        setError(user.error);
-        return;
-      }
-      setUser(user);
-      navigate("/");
-    } catch (e) {
-      console.log(e);
+    const user = await fetchJson("users", "POST", {
+      firstName,
+      lastName,
+      email,
+      password,
+    });
+    if (user.error) {
+      setError(user.error);
+      return;
     }
+    setUser(user);
+    navigate("/");
   }
 
   return (
