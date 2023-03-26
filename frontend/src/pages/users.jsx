@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Stack, Row, Col, Form, Button } from "react-bootstrap";
+import { Row, Col, Form, Button } from "react-bootstrap";
 import { fetchJson } from "../fetch.js";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
@@ -12,7 +12,7 @@ function Users(props) {
   const searchRef = useRef();
   const { state } = useLocation();
   const chatId = state?.chatId ?? null;
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const navigate = useNavigate();
 
   useEffect(() => {

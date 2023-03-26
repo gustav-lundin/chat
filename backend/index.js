@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const sequelize = require("./sequelize");
 const { router } = require("./rest/index");
-const errorHandler = require("./middleware/errorhandler");
+const errorHandler = require("./middleware/errorhandler.js");
 const AppError = require("./apperror");
 const useSession = require("./middleware/sessionhandler");
 const seeder = require("./seeder/seeder.js");
@@ -45,9 +45,12 @@ app.use("*", (req, res, next) => {
   next();
 });
 app.use("/api", router);
-app.use("*", (req, res) => {
-  throw new AppError("Not found", 404);
-});
-app.use("*", errorHandler);
+app.use(
+  "*",
+  () => {
+    throw new AppError("Not found", 404);
+  },
+  errorHandler
+);
 
 app.listen(port, () => console.log(`Listening on http://localhost: ${port}`));

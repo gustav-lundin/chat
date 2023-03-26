@@ -2,7 +2,7 @@ const { encryptPassword } = require("../../util/password.js");
 const express = require("express");
 const { User } = require("../../models/index.js");
 const { tryCatch } = require("../../util/trycatch.js");
-const AppError = require("../../apperror");
+const AppError = require("../../apperror.js");
 const { getAuthMiddleware } = require("../../acl/acl.js");
 const loginRouter = express.Router();
 

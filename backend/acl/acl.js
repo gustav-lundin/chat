@@ -6,7 +6,7 @@ const AppError = require("../apperror");
 const getAuthMiddleware = (route) => {
   return async (req, res, next) => {
     try {
-      const isAdmin = req.session.user.userRole === "admin";
+      const isAdmin = req.session?.user?.userRole === "admin";
       if ((req.params.chatId || req.body.chatId) && !isAdmin) {
         await authorizeChatRequest(
           req,
