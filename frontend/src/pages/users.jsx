@@ -6,7 +6,7 @@ import { useLocation } from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "../App.jsx";
 
-function Users(props) {
+function Users() {
   const [users, setUsers] = useState([]);
   const [invitedUsers, setInvitedUsers] = useState(new Set());
   const searchRef = useRef();
@@ -17,26 +17,21 @@ function Users(props) {
 
   useEffect(() => {
     (async () => {
-      try {
-        const userData = await fetchJson("users/all");
-        if (userData.error) {
-          // navigate("/error");
+      const userData = await fetchJson("users/all");
+      if (userData.error) {
+        setUsers(userData);
+        return;
+      }
+      const users = userData.filter((u) => u.id != user.id);
+      setUsers(users);
+      if (chatId != null) {
+        const data = await fetchJson(`chats/${chatId}`);
+        if (data.error) {
+          setUsers(data);
           return;
         }
-        const users = userData.filter((u) => u.id != user.id);
-        setUsers(users);
-        if (chatId != null) {
-          const data = await fetchJson(`chats/${chatId}`);
-          console.log(data);
-          if (data.error) {
-            return;
-          }
-          const invitedUsers = data.chat.chatMembers.map((cm) => cm.id);
-          setInvitedUsers(new Set(invitedUsers));
-        }
-      } catch (e) {
-        console.log(e);
-        // navigate("/error");
+        const invitedUsers = data.chat.chatMembers.map((cm) => cm.id);
+        setInvitedUsers(new Set(invitedUsers));
       }
     })();
   }, []);
@@ -44,30 +39,22 @@ function Users(props) {
   async function onSearch(e) {
     e.preventDefault();
     const searchKey = searchRef.current.value;
-    try {
-      const data = await fetchJson(`users/all?search_query=${searchKey}`);
-      if (data.error) {
-        return;
-      }
-      setUsers(data);
-    } catch (e) {
-      console.log(e);
-    }
+    const data = await fetchJson(`users/all?search_query=${searchKey}`);
+    setUsers(data);
   }
 
   async function invite(userId) {
-    try {
-      const data = await fetchJson(`chatmembers/${chatId}/${userId}`, "POST");
-      if (data.error) {
-        return;
-      }
-      setInvitedUsers((s) => new Set(s.add(userId)));
-      console.log(data);
-    } catch (e) {
-      console.log(e);
+    const data = await fetchJson(`chatmembers/${chatId}/${userId}`, "POST");
+    if (data.error) {
+      setUsers(data);
+      return;
     }
+    setInvitedUsers((s) => new Set(s.add(userId)));
   }
 
+  if (users.error) {
+    return <h1>{users.error}</h1>;
+  }
   return (
     <Row className="justify-content-center">
       <Col xs={9} md={6}>
