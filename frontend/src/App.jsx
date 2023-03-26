@@ -1,26 +1,19 @@
 import { createContext, useEffect, useState } from "react";
-import { Link, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Login from "./pages/login";
 import Register from "./pages/register";
 import Chats from "./pages/chats";
 import Chat from "./pages/chat";
 import { fetchJson } from "./fetch";
-import {
-  Stack,
-  Container,
-  Form,
-  Button,
-  Row,
-  Col,
-  Nav,
-  Navbar,
-} from "react-bootstrap";
+import { Container, Button, Nav, Navbar } from "react-bootstrap";
 import Users from "./pages/users";
+import { useNavigate } from "react-router-dom";
 
 export const UserContext = createContext(null);
 
 function App() {
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
@@ -36,6 +29,7 @@ function App() {
     try {
       await fetchJson("login", "DELETE");
       setUser(null);
+      navigate("/");
     } catch (e) {
       console.log(e);
     }
