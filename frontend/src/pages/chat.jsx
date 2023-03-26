@@ -14,7 +14,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../App.jsx";
 
-function Chat(props) {
+function Chat() {
   const { user } = useContext(UserContext);
   const isAdmin = user.userRole === "admin";
   const { chatId } = useParams();
@@ -35,17 +35,12 @@ function Chat(props) {
         event.preventDefault();
         const message = messageRef.current.value;
         messageRef.current.value = "";
-        if (message.trim() === "") {
-          return;
-        }
         (async () => {
-          try {
-            const data = await fetchJson(`messages/${chatId}`, "POST", {
-              content: message,
-            });
-          } catch (e) {
-            console.log(e);
-            navigate("/error");
+          const data = await fetchJson(`messages/${chatId}`, "POST", {
+            content: message,
+          });
+          if (data.error) {
+            setChat({ error: data.error });
           }
         })();
       }
@@ -58,30 +53,25 @@ function Chat(props) {
 
   useEffect(() => {
     (async () => {
-      try {
-        const data = await fetchJson(`chats/${chatId}`);
-        if (data.error) {
-          navigate("/error");
-          return;
-        }
-        const chat = data.chat;
-        const creator = chat.chatMembers.find(
-          (member) => member.ChatMember.creator
-        );
-        console.log({ chat, user, creator });
-        console.assert(creator !== undefined);
-        if (user.userRole == "admin") {
-          setHasChatAdminRights(true);
-        }
-        if (user.id == creator.id) {
-          setHasChatAdminRights(true);
-          setIsCreator(true);
-        }
-        setChat(chat);
-      } catch (e) {
-        console.log(e);
-        navigate("/error");
+      const data = await fetchJson(`chats/${chatId}`);
+      if (data.error) {
+        setChat({ error: data.error });
+        return;
       }
+      const chat = data.chat;
+      const creator = chat.chatMembers.find(
+        (member) => member.ChatMember.creator
+      );
+      console.log({ chat, user, creator });
+      console.assert(creator !== undefined);
+      if (user.userRole == "admin") {
+        setHasChatAdminRights(true);
+      }
+      if (user.id == creator.id) {
+        setHasChatAdminRights(true);
+        setIsCreator(true);
+      }
+      setChat(chat);
     })();
   }, []);
 
@@ -137,7 +127,7 @@ function Chat(props) {
       let data = JSON.parse(chatMember.data);
       console.log("[user-blocked]", data);
       if (data.userId === user.id && data.blocked) {
-        navigate("/blocked");
+        navigate("/");
       }
       setChat((preState) => {
         const chatMembers = preState.chatMembers.map((member) => {
@@ -154,33 +144,26 @@ function Chat(props) {
   }, []);
 
   async function setBlocked(userId, blocked) {
-    try {
-      const data = await fetchJson(
-        `chatmembers/block/${chat.id}/${userId}`,
-        "PUT",
-        { blocked }
-      );
-      console.log(data);
-      if (data.error) {
-        return;
-      }
-    } catch (e) {
-      console.log(e);
+    const data = await fetchJson(
+      `chatmembers/block/${chat.id}/${userId}`,
+      "PUT",
+      { blocked }
+    );
+    if (data.error) {
+      setChat({ error: data.error });
     }
   }
 
   async function deleteMessage(messageId) {
-    try {
-      const data = await fetchJson(
-        `messages/${chat.id}/${messageId}`,
-        "DELETE"
-      );
-      console.log(data);
-    } catch (e) {
-      console.log(e);
+    const data = await fetchJson(`messages/${chat.id}/${messageId}`, "DELETE");
+    if (data.error) {
+      setChat({ error: data.error });
     }
   }
 
+  if (chat.error) {
+    return <h1>{chat.error}</h1>;
+  }
   return (
     <Row className="justify-content-center">
       <Col xs={9} md={6}>
