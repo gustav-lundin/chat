@@ -13,7 +13,7 @@ import { UserContext } from "../App.jsx";
 import { useNavigate } from "react-router-dom";
 import { fetchJson } from "../fetch.js";
 
-function Login(props) {
+function Login() {
   const { user, setUser } = useContext(UserContext);
   const [error, setError] = useState(null);
   const emailRef = useRef();
@@ -22,19 +22,15 @@ function Login(props) {
 
   async function onSubmit(e) {
     e.preventDefault();
-    try {
-      const user = await fetchJson("login", "POST", {
-        email: emailRef.current.value,
-        password: passwordRef.current.value,
-      });
-      if (!user.error) {
-        setError(null);
-        setUser(user);
-      } else {
-        setError(user.error);
-      }
-    } catch (e) {
-      console.log(e);
+    const user = await fetchJson("login", "POST", {
+      email: emailRef.current.value,
+      password: passwordRef.current.value,
+    });
+    if (!user.error) {
+      setError(null);
+      setUser(user);
+    } else {
+      setError(user.error);
     }
   }
 
