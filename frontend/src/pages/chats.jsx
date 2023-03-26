@@ -2,11 +2,9 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { fetchJson } from "../fetch.js";
 import {
   Stack,
-  Container,
   Button,
   Row,
   Col,
-  Alert,
   DropdownButton,
   Dropdown,
   ButtonGroup,
@@ -19,7 +17,7 @@ import { UserContext } from "../App.jsx";
 const sortByOptions = ["Name", "User activity", "Chat activity"];
 const sortByRoutes = ["name", "useractivity", "chatactivity"];
 
-function Chats(props) {
+function Chats() {
   const [chats, setChats] = useState({});
   const [sortByIndex, setSortByIndex] = useState(0);
   let [stateCounter, setStateCounter] = useState(0);
@@ -29,17 +27,10 @@ function Chats(props) {
 
   useEffect(() => {
     (async () => {
-      try {
-        const data = await fetchJson(
-          `chats/all?orderby=${sortByRoutes[sortByIndex]}`
-        );
-        console.log(data);
-        if (!data.error) {
-          setChats(data);
-        }
-      } catch (e) {
-        console.log(e);
-      }
+      const data = await fetchJson(
+        `chats/all?orderby=${sortByRoutes[sortByIndex]}`
+      );
+      setChats(data);
     })();
   }, [sortByIndex, stateCounter]);
 
@@ -52,31 +43,27 @@ function Chats(props) {
       chatNameRef.current.placeholder = validationError;
       return;
     }
-    try {
-      const data = await fetchJson("/chats", "POST", { name: chatName });
-      if (data.error) {
-        console.log("error");
-        return;
-      }
+    const data = await fetchJson("/chats", "POST", { name: chatName });
+    if (data.error) {
+      setChats(data);
+    } else {
       navigate("/users", { state: { chatId: data.chat.id } });
-    } catch (e) {
-      console.log(e);
     }
   }
 
   async function acceptInvite(chatId) {
-    try {
-      const data = await fetchJson(`/chatmembers/accept/${chatId}`, "PUT");
-      console.log(data);
-      if (data.error) {
-        return;
-      }
+    const data = await fetchJson(`/chatmembers/accept/${chatId}`, "PUT");
+    console.log(data);
+    if (data.error) {
+      setChats(data);
+    } else {
       setStateCounter(++stateCounter);
-    } catch (e) {
-      console.log(e);
     }
   }
 
+  if (chats.error) {
+    return <h1>{chats.error}</h1>;
+  }
   return (
     <Row className="justify-content-center">
       <Col xs={9} md={6}>
