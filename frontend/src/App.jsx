@@ -18,7 +18,6 @@ function App() {
   useEffect(() => {
     (async () => {
       const data = await fetchJson("login");
-      console.log(data);
       if (!data.error) {
         setUser(data);
       }
@@ -26,13 +25,9 @@ function App() {
   }, []);
 
   async function logOut() {
-    try {
       await fetchJson("login", "DELETE");
       setUser(null);
       navigate("/");
-    } catch (e) {
-      console.log(e);
-    }
   }
 
   return (

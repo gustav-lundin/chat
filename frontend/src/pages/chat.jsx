@@ -62,7 +62,6 @@ function Chat() {
       const creator = chat.chatMembers.find(
         (member) => member.ChatMember.creator
       );
-      console.log({ chat, user, creator });
       console.assert(creator !== undefined);
       if (user.userRole == "admin") {
         setHasChatAdminRights(true);
@@ -80,22 +79,18 @@ function Chat() {
 
     sse.addEventListener("connect", (message) => {
       let data = JSON.parse(message.data);
-      console.log("[connect]", data);
     });
 
     sse.addEventListener("disconnect", (message) => {
       let data = JSON.parse(message.data);
-      console.log("[disconnect]", data);
     });
 
     sse.addEventListener("keep-alive", (message) => {
       let data = JSON.parse(message.data);
-      console.log("keepalive", data);
     });
 
     sse.addEventListener("new-message", (message) => {
       let data = JSON.parse(message.data);
-      console.log("[new-message]", data);
       setChat((preState) => {
         const chatMessages = [...preState.chatMessages, data];
         const newState = { ...preState, chatMessages };
@@ -105,7 +100,6 @@ function Chat() {
 
     sse.addEventListener("deleted-message", (message) => {
       let data = JSON.parse(message.data);
-      console.log("[deleted-message]", data);
       setChat((preState) => {
         const chatMessages = [...preState.chatMessages].filter(
           (message) => message.id != data.id
@@ -116,7 +110,6 @@ function Chat() {
 
     sse.addEventListener("user-blocked", (chatMember) => {
       let data = JSON.parse(chatMember.data);
-      console.log("[user-blocked]", data);
       if (data.userId === user.id && data.blocked) {
         navigate("/");
       }
@@ -267,7 +260,7 @@ function Chat() {
             </Row>
           ))}
         </Stack>
-        <Form onSubmit={() => console.log("submit")}>
+        <Form>
           <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
             <Form.Label>New message</Form.Label>
             <Form.Control as="textarea" rows={3} ref={messageRef} />

@@ -53,7 +53,6 @@ function Chats() {
 
   async function acceptInvite(chatId) {
     const data = await fetchJson(`/chatmembers/accept/${chatId}`, "PUT");
-    console.log(data);
     if (data.error) {
       setChats(data);
     } else {
