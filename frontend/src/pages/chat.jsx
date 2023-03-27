@@ -107,18 +107,9 @@ function Chat() {
       let data = JSON.parse(message.data);
       console.log("[deleted-message]", data);
       setChat((preState) => {
-        // just use filter
-        const chatMessages = [...preState.chatMessages];
-        let deletedIndex = -1;
-        for (let i = 0; i < chatMessages.length; i++) {
-          const message = chatMessages[i];
-          if (message.id === data.id) {
-            deletedIndex = i;
-            break;
-          }
-        }
-        console.assert(deletedIndex !== -1);
-        chatMessages.splice(deletedIndex, 1);
+        const chatMessages = [...preState.chatMessages].filter(
+          (message) => message.id != data.id
+        );
         return { ...preState, chatMessages };
       });
     });
